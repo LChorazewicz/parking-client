@@ -20,10 +20,20 @@ use App\Library\Api\Stale\StatusyWnioskuApi;
 
 class Metody extends MetodyAbstract
 {
+
     /**
      * @var WniosekApi
      */
     private $wniosek;
+
+    /**
+     * Metody constructor.
+     * @param string $url
+     */
+    public function __construct(string $url)
+    {
+        parent::__construct($url);
+    }
 
     /**
      * @return WniosekApi

@@ -107,7 +107,7 @@ class StronyController extends AbstractController
             'nazwa_kroku' => 'krok 1',
             'numer_kroku' => 1,
             'api_key' => $this->sesja->pobierz("idWnioskuApi"),
-            'strona_bledu' => $this->getParameter("domena") . '/wystapil/blad',
+            'domena' => $this->getParameter("domena")
         ]);
     }
 
@@ -140,7 +140,7 @@ class StronyController extends AbstractController
             'nazwa_kroku' => 'krok 2',
             'numer_kroku' => 2,
             'api_key' => $this->sesja->pobierz("idWnioskuApi"),
-            'strona_bledu' => $this->getParameter("domena") . '/wystapil/blad'
+            'domena' => $this->getParameter("domena")
         ]);
     }
 
@@ -173,7 +173,7 @@ class StronyController extends AbstractController
             'nazwa_kroku' => 'krok 3',
             'numer_kroku' => 3,
             'api_key' => $this->sesja->pobierz("idWnioskuApi"),
-            'strona_bledu' => $this->getParameter("domena") . '/wystapil/blad'
+            'domena' => $this->getParameter("domena")
         ]);
     }
 
@@ -206,7 +206,7 @@ class StronyController extends AbstractController
             'nazwa_kroku' => 'podsumowanie',
             'numer_kroku' => 4,
             'api_key' => $this->sesja->pobierz("idWnioskuApi"),
-            'strona_bledu' => $this->getParameter("domena") . '/wystapil/blad'
+            'domena' => $this->getParameter("domena")
         ]);
     }
 

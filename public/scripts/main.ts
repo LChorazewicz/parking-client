@@ -5,8 +5,8 @@ let numerKroku: number = krok;
 // @ts-ignore
 let apiKey: string = apikey;
 // @ts-ignore
-let stronaBledu: string = stronabledu;
+let domena: string = Domena;
 
-console.debug("Aktualny krok: " + numerKroku + " apikey " + apiKey + " strona błędu " + stronaBledu);
+console.debug("Aktualny krok: " + numerKroku + " apikey " + apiKey + " domena " + domena);
 let aplikakcja = new app.Aplikacja();
-aplikakcja.uruchom(numerKroku, stronaBledu);
+aplikakcja.uruchom(numerKroku, domena);

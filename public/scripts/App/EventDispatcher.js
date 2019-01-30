@@ -6,7 +6,7 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
             this.dniWybrane = [];
             this.operacjeNaTablicach = new OperacjeNaTablicach_1.OperacjeNaTablicach();
         }
-        EventDispatcher.prototype.uruchom = function (numerKroku, stronaBledu) {
+        EventDispatcher.prototype.uruchom = function (numerKroku, domena) {
             switch (numerKroku) {
                 case 1: {
                     var elementKalendarz = document.body.querySelector("#termin");
@@ -69,14 +69,14 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                         }
                         if (poprawnieZwalidowany) {
                             var obslugaApi = new ObslugaApi_1.ObslugaApi();
-                            var strefa = obslugaApi.pobierzObiektPobierz().pobierzIdStrefy(wojewodztwo, miasto, ulica);
+                            var strefa = obslugaApi.pobierzObiektPobierz(domena).pobierzIdStrefy(wojewodztwo, miasto, ulica);
                             if (strefa <= 0) {
                                 dostepnosc = false;
                                 listaBledow.push("Wybrana strefa nie istnieje w Naszym systemie, spróbuj innej lokalizacji!");
                                 odswiez_1.pokazBladSystemowy("Wybrana strefa nie istnieje w Naszym systemie, spróbuj innej lokalizacji!");
                             }
                             if (dostepnosc) {
-                                var miejsca = obslugaApi.pobierzObiektPobierz().sprawdzDostepnoscMiejscWStrefie(strefa, dni_1);
+                                var miejsca = obslugaApi.pobierzObiektPobierz(domena).sprawdzDostepnoscMiejscWStrefie(strefa, dni_1);
                                 if (miejsca.dostepnoscMiejsc && !miejsca.dostepnoscWybranychDat) {
                                     dostepnosc = false;
                                     if (miejsca.alternatywa) {

@@ -19,7 +19,7 @@ export class EventDispatcher {
         this.operacjeNaTablicach = new OperacjeNaTablicach();
     }
 
-    public uruchom(numerKroku: number, stronaBledu: string) {
+    public uruchom(numerKroku: number, domena: string) {
         switch (numerKroku) {
             case 1: {
                 let elementKalendarz = document.body.querySelector("#termin") as HTMLInputElement;
@@ -93,7 +93,7 @@ export class EventDispatcher {
 
                     if (poprawnieZwalidowany) {
                         let obslugaApi = new ObslugaApi();
-                        let strefa = obslugaApi.pobierzObiektPobierz().pobierzIdStrefy(wojewodztwo, miasto, ulica);
+                        let strefa = obslugaApi.pobierzObiektPobierz(domena).pobierzIdStrefy(wojewodztwo, miasto, ulica);
 
                         if (strefa <= 0) {
                             dostepnosc = false;
@@ -102,7 +102,7 @@ export class EventDispatcher {
                         }
 
                         if (dostepnosc) {
-                            let miejsca = obslugaApi.pobierzObiektPobierz().sprawdzDostepnoscMiejscWStrefie(strefa, dni);
+                            let miejsca = obslugaApi.pobierzObiektPobierz(domena).sprawdzDostepnoscMiejscWStrefie(strefa, dni);
 
                             if (miejsca.dostepnoscMiejsc && !miejsca.dostepnoscWybranychDat) {
                                 dostepnosc = false;

@@ -4,8 +4,8 @@ define(["require", "exports", "./Pobierz", "./Waliduj"], function (require, expo
     var ObslugaApi = /** @class */ (function () {
         function ObslugaApi() {
         }
-        ObslugaApi.prototype.pobierzObiektPobierz = function () {
-            return new Pobierz_1.Pobierz();
+        ObslugaApi.prototype.pobierzObiektPobierz = function (domena) {
+            return new Pobierz_1.Pobierz(domena);
         };
         ObslugaApi.prototype.pobierzObiektWaliduj = function () {
             return new Waliduj_1.Waliduj();

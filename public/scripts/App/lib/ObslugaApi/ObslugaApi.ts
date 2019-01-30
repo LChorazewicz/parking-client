@@ -2,8 +2,8 @@ import {Pobierz} from "./Pobierz";
 import {Waliduj} from "./Waliduj";
 
 export class ObslugaApi {
-    public pobierzObiektPobierz(): Pobierz{
-        return new Pobierz();
+    public pobierzObiektPobierz(domena: string): Pobierz{
+        return new Pobierz(domena);
     }
 
     public pobierzObiektWaliduj(): Waliduj{

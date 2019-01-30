@@ -9,7 +9,7 @@
         {% block javascripts %}
             <script>var krok = {{ numer_kroku }} || {};</script>
             <script>var apikey = "{{ api_key }}" || "";</script>
-            <script>var stronabledu = '{{ strona_bledu }}' || "";</script>
+            <script>var Domena = '{{ domena }}' || "";</script>
 
             <script src="{{ asset('./node_modules/requirejs/require.js') }}" data-main="{{ asset('./scripts/main.js') }}"></script>
 

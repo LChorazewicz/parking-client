@@ -22,6 +22,20 @@ use GuzzleHttp\RequestOptions;
 abstract class MetodyAbstract
 {
     /**
+     * @var string
+     */
+    private $url;
+
+    /**
+     * MetodyAbstract constructor.
+     * @param string $url
+     */
+    public function __construct(string $url)
+    {
+        $this->url = $url;
+    }
+
+    /**
      * @param string $metoda
      * @param array $daneDodatkowe
      * @return OdpowiedzApi

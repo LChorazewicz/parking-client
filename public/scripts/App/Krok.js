@@ -4,9 +4,9 @@ define(["require", "exports", "./lib/ObslugaApi/Pobierz", "./lib/Util/Jquery"], 
     var Krok = /** @class */ (function () {
         function Krok() {
         }
-        Krok.prototype.uruchom = function (numerKroku, stronaBledu) {
+        Krok.prototype.uruchom = function (numerKroku, domena) {
             console.info("Uruchamiam krok" + numerKroku);
-            var pobierz = new Pobierz_1.Pobierz();
+            var pobierz = new Pobierz_1.Pobierz(domena);
             switch (numerKroku) {
                 case 1: {
                     var selectWojewodztwo_1 = document.getElementById("wojewodztwo");
@@ -14,7 +14,7 @@ define(["require", "exports", "./lib/ObslugaApi/Pobierz", "./lib/Util/Jquery"], 
                     var selectUlica_1 = document.getElementById("ulica");
                     pobierz.wojewodztwa(function (wojewodztwa) {
                         if (wojewodztwa.blad === true) {
-                            window.location.href = stronaBledu;
+                            window.location.href = domena + '/wystapil/blad';
                             return;
                         }
                         $.each(selectWojewodztwo_1.options, function (index) {
@@ -48,7 +48,7 @@ define(["require", "exports", "./lib/ObslugaApi/Pobierz", "./lib/Util/Jquery"], 
                         selectMiasto_1.appendChild(option);
                         pobierz.miasta(selectWojewodztwo_1.selectedIndex, function (response) {
                             if (response.blad === true) {
-                                window.location.href = stronaBledu;
+                                window.location.href = domena + '/wystapil/blad';
                                 return;
                             }
                             $.each(response, function (index, obj) {
@@ -76,7 +76,7 @@ define(["require", "exports", "./lib/ObslugaApi/Pobierz", "./lib/Util/Jquery"], 
                         selectUlica_1.appendChild(option);
                         pobierz.ulice(selectMiasto_1.selectedIndex, function (response) {
                             if (response.blad === true) {
-                                window.location.href = stronaBledu;
+                                window.location.href = domena + '/wystapil/blad';
                                 return;
                             }
                             $.each(response, function (index, obj) {

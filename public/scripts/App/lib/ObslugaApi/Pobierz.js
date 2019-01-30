@@ -2,8 +2,8 @@ define(["require", "exports", "../Util/Request"], function (require, exports, Re
     "use strict";
     exports.__esModule = true;
     var Pobierz = /** @class */ (function () {
-        function Pobierz() {
-            this.url = "http://parking.pl";
+        function Pobierz(domena) {
+            this.url = domena;
             this.request = new Request_1.Request();
         }
         Pobierz.prototype.wojewodztwa = function (success, error) {

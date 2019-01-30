@@ -3,9 +3,9 @@ import {Pobierz} from "./lib/ObslugaApi/Pobierz";
 import * as $ from "./lib/Util/Jquery";
 
 export class Krok implements KrokInterface {
-    uruchom(numerKroku: number, stronaBledu: string): void {
+    uruchom(numerKroku: number, domena: string): void {
         console.info("Uruchamiam krok" + numerKroku);
-        let pobierz: Pobierz = new Pobierz();
+        let pobierz: Pobierz = new Pobierz(domena);
         switch (numerKroku) {
             case 1: {
                 let selectWojewodztwo: HTMLSelectElement = document.getElementById("wojewodztwo") as HTMLSelectElement;
@@ -14,7 +14,7 @@ export class Krok implements KrokInterface {
 
                 pobierz.wojewodztwa(function (wojewodztwa) {
                     if(wojewodztwa.blad === true){
-                        window.location.href = stronaBledu;
+                        window.location.href = domena + '/wystapil/blad';
                         return;
                     }
                     $.each(selectWojewodztwo.options, function (index) {
@@ -57,7 +57,7 @@ export class Krok implements KrokInterface {
 
                     pobierz.miasta(selectWojewodztwo.selectedIndex,function (response) {
                         if(response.blad === true){
-                            window.location.href = stronaBledu;
+                            window.location.href = domena + '/wystapil/blad';
                             return;
                         }
                         $.each(response, function (index, obj) {
@@ -90,7 +90,7 @@ export class Krok implements KrokInterface {
 
                     pobierz.ulice(selectMiasto.selectedIndex, function (response) {
                         if(response.blad === true){
-                            window.location.href = stronaBledu;
+                            window.location.href = domena + '/wystapil/blad';
                             return;
                         }
                         $.each(response, function (index, obj) {

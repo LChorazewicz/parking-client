@@ -5,7 +5,7 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'en'
-    domena: 'domena.parking.pl'
+    domena: 'http://parking.pl'
 
 services:
     # default configuration for services in *this* file
@@ -27,6 +27,10 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+
+    App\Library\Api\Metody:
+        class: App\Library\Api\Metody
+        arguments: ['%domena%']
 
     kernel.listener.OnKernelExceptionListener:
         class: App\Listeners\OnKernelExceptionListener

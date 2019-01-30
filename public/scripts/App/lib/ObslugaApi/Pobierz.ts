@@ -20,8 +20,8 @@ interface Ulice extends Miasta{
 export class Pobierz {
     private url: string;
     private request: Request;
-    constructor(){
-        this.url = "http://parking.pl";
+    constructor(domena: string){
+        this.url = domena;
         this.request = new Request();
     }
 

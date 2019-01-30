@@ -9,8 +9,8 @@ export class Aplikacja{
         this.krok = new krok.Krok();
     }
 
-    public uruchom(numerKroku: number, stronaBledu: string): void {
-        this.krok.uruchom(numerKroku, stronaBledu);//ładuje dane do selectow i przygotowuje aplikacje;
-        (new EventDispatcher()).uruchom(numerKroku, stronaBledu);//operuje na eventach, waliduje
+    public uruchom(numerKroku: number, domena: string): void {
+        this.krok.uruchom(numerKroku, domena);//ładuje dane do selectow i przygotowuje aplikacje;
+        (new EventDispatcher()).uruchom(numerKroku, domena);//operuje na eventach, waliduje
     }
 }
