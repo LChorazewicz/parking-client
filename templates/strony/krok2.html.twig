@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Parking.pl Nasze rowiązania, na Twoją kieszeń :) - {{ nazwa_kroku }}{% endblock %}
+{% block javascript %}
+{{ parent() }}
+{% endblock %}
+{% block body %}
+    <div class="row offset-1 col-10 text-center">
+        <div class="col-6 text-center">
+            <div class="col-12 text-center">
+                <div class="row mb-5">
+                    <div class="col-8 offset-2" style="overflow:hidden;">
+                        <label for="rejestracja" class="h4">Wpisz numer rejestracyjny</label>
+                        <input class="col-12 form-control" id="rejestracja">
+                        <small class="form-text text-muted d-none"></small>
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-8 offset-2" style="overflow:hidden;">
+                        <label for="imie" class="h4">Wpisz imię</label>
+                        <input class="col-12 form-control" id="imie">
+                        <small class="form-text text-muted d-none"></small>
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-8 offset-2" style="overflow:hidden;">
+                        <label for="nazwisko" class="h4">Wpisz nazwisko</label>
+                        <input class="col-12 form-control" id="nazwisko">
+                        <small class="form-text text-muted d-none"></small>
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-8 offset-2" style="overflow:hidden;">
+                        <label for="telefon" class="h4">Wpisz numer telefonu</label>
+                        <input class="col-12 form-control" id="telefon">
+                        <small class="form-text text-muted d-none"></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 d-flex justify-content-center align-items-center">
+            <div class="col-12 text-center">
+                <div class="row mb-5">
+                    <div class="col-12" style="overflow:hidden;">
+                        <input class="col-1 form-check-input" id="zgoda_1" type="checkbox" required>
+                        <label class="col-7" for="zgoda_1">Zgoda na zbieranie danych w celach analitycznych</label>
+                        <small class="form-text text-muted d-none"></small>
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-12" style="overflow:hidden;">
+                        <input class="col-1 form-check-input" id="zgoda_2" type="checkbox">
+                        <label class="col-7" for="zgoda_2">Zgoda na zbieranie danych w celach analitycznych</label>
+                        <small class="form-text text-muted d-none"></small>
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-12" style="overflow:hidden;">
+                        <input class="col-1 form-check-input" id="zgoda_3" type="checkbox">
+                        <label class="col-7" for="zgoda_3">Zgoda na zbieranie danych w celach analitycznych</label>
+                        <small class="form-text text-muted d-none"></small>
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-12" style="overflow:hidden;">
+                        <input class="col-1 form-check-input" id="zgoda_4" type="checkbox">
+                        <label class="col-7" for="zgoda_4">Zgoda na zbieranie danych w celach analitycznych</label>
+                        <small class="form-text text-muted d-none"></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row col-3 offset-9">
+        <div class="btn btn-primary float-right" id="przejdzNa3Krok">Przejdź dalej</div>
+    </div>
+{% endblock %}

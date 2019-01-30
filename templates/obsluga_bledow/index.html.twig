@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Wystąpił błąd aplikacji{% endblock %}</title>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% block javascripts %}
+        <script src="{{ asset('node_modules/jquery/dist/jquery.min.js') }}"></script>
+    {% endblock %}
+
+    <link rel="shortcut icon" type="image/svg" href="{{ asset('icon/samochod.svg') }}">
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('node_modules/bootstrap/dist/css/bootstrap.css') }}">
+        <link rel="stylesheet" href="{{ asset('node_modules/air-datepicker/dist/css/datepicker.min.css') }}">
+
+        <link rel="stylesheet" href="{{ asset('styles/style.css') }}">
+    {% endblock %}
+</head>
+<body>
+<div class="container-fluid h-100">
+    <div class="row justify-content-center" style="margin-top: 40vh">
+        <h2>Wystąpił błąd aplikacji Parking.pl</h2><br>
+    </div>
+    <div class="row justify-content-center">
+        <h4>Kod bledu: {{kod_bledu}}</h4>
+    </div>
+    <div class="row justify-content-center">
+        <a onclick="window.location.href = '{{ host }}'">powróć do wniosku</a>
+    </div>
+    {% block body %}{% endblock %}
+</div>
+</body>
+</html>

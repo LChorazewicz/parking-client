@@ -1,0 +1,93 @@
+.kalendarz {
+    width: 460px;
+    height: 469px;
+}
+
+.kalendarz .naglowek {
+    width: 100%;
+    height: 40px;
+}
+
+.kalendarz .naglowek .wstecz {
+    width: 20%;
+    background-color: #699fda;
+    float: left;
+    height: 100%;
+    border-radius: 8px;
+}
+
+.wstecz::before {
+    margin-top: 6px;
+    display: block;
+    content: '<<';
+}
+
+.kalendarz .naglowek .nazwa_miesiaca {
+    width: 60%;
+    float: left;
+    height: 100%;
+    margin-top: 6px;
+    display: block;
+}
+
+.kalendarz .naglowek .do_przodu {
+    width: 20%;
+    background-color: #699fda;
+    float: left;
+    height: 100%;
+    border-radius: 8px;
+}
+
+.do_przodu::before {
+    content: '>>';
+    margin-top: 6px;
+    display: block;
+}
+
+.kalendarz .cialo {
+    width: 90%;
+    height: 80%;
+    margin-top: 3%;
+    margin-left: 5%;
+}
+
+.kalendarz .cialo .komorka {
+    width: 47px;
+    height: 45px;
+    background-color: #cfcfcf;
+    margin: 6px;
+    float: left;
+    font-size: 29px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 15px;
+}
+
+.kalendarz .cialo .komorka:hover {
+    color: white;
+}
+
+.kalendarz .cialo .komorka.nastepny_miesiac {
+    background-color: #699fda;
+}
+
+.kalendarz .cialo .komorka.poprzedni_miesiac {
+    background-color: #699fda;
+}
+
+.kalendarz .cialo .komorka.pierwszy_dzien_tygodnia {
+}
+
+.kalendarz .legenda * {
+    width: 47px;
+    height: 20px;
+    background-color: #699fda;
+    float: left;
+    font-size: 13px;
+    margin: 6px;
+    border-radius: 6px;
+}
+
+.wybrany_dzien{
+    background-color: #39A275 !important;
+}

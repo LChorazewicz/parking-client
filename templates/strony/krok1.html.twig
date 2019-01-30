@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Parking.pl Nasze rowiązania, na Twoją kieszeń :) - {{ nazwa_kroku }}{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+{% block body %}
+    <div class="row offset-1 col-10 text-center">
+        <div class="col-6 text-center">
+            <div class="col-8 offset-2 mt-4" style="overflow:hidden;">
+                <label for="termin" class="h4">Wybierz dogodny termin</label>
+                <input type="hidden" title="Wybierz date i godzinę od - do" name="termin" id="termin">
+                <small class="form-text text-muted d-none"></small>
+            </div>
+        </div>
+        <div class="col-6 d-flex justify-content-center align-items-center">
+            <div class="col-12 text-center">
+                <div class="row mb-5">
+                    <div class="col-8 offset-2" style="overflow:hidden;">
+                        <label class="h4" for="wojewodztwo">Wybierz województwo</label>
+                        <select class="form-control" id="wojewodztwo" name="wojewodztwo" data-live-search="true">
+                            <option selected disabled>-- Wybierz --</option>
+                        </select>
+                        <small class="form-text text-muted d-none"></small>
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-8 offset-2" style="overflow:hidden;">
+                        <label class="h4" for="miasto">Wybierz miasto</label>
+                        <select class="form-control" id="miasto" name="miasto" data-live-search="true">
+                            <option selected disabled>-- Wybierz --</option>
+                        </select>
+                        <small class="form-text text-muted d-none"></small>
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-8 offset-2" style="overflow:hidden;">
+                        <label class="h4" for="ulica">Wybierz ulice</label>
+                        <select class="form-control" id="ulica" name="ulica" data-live-search="true">
+                            <option selected disabled>-- Wybierz --</option>
+                        </select>
+                        <small class="form-text text-muted d-none"></small>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row col-3 offset-9">
+        <div class="btn btn-primary float-right" id="przejdzNa2Krok">Przejdź dalej</div>
+    </div>
+{% endblock %}

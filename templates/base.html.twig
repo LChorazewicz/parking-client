@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}!{% endblock %}</title>
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        {% block javascripts %}
+            <script>var krok = {{ numer_kroku }} || {};</script>
+            <script>var apikey = "{{ api_key }}" || "";</script>
+            <script>var stronabledu = '{{ strona_bledu }}' || "";</script>
+
+            <script src="{{ asset('./node_modules/requirejs/require.js') }}" data-main="{{ asset('./scripts/main.js') }}"></script>
+
+            <script src="{{ asset('node_modules/jquery/dist/jquery.min.js') }}"></script>
+        {% endblock %}
+
+        <link rel="shortcut icon" type="image/svg" href="{{ asset('icon/samochod.svg') }}">
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('node_modules/bootstrap/dist/css/bootstrap.css') }}">
+            <link rel="stylesheet" href="{{ asset('node_modules/air-datepicker/dist/css/datepicker.min.css') }}">
+
+            <link rel="stylesheet" href="{{ asset('styles/style.css') }}">
+            <link rel="stylesheet" href="{{ asset('styles/kalendarz.css') }}">
+        {% endblock %}
+    </head>
+    <body>
+        <div class="container-fluid h-100">
+            <div class="row justify-content-center">
+                <div class="col-4 p-0 d-flex sticky-top justify-content-center align-items-center text-muted h2">
+                    <div class="col-12 text-white h2 p-5 justify-content-center {% if(numer_kroku == 1) %} bg-info {% else %} bg-secondary {% endif %}">
+                        Termin i lokalizacja <i><img class="icon-top" src="{{ asset('icon/zegar.svg') }}"></i>
+                    </div>
+                </div>
+                <div class="col-4 p-0 d-flex justify-content-center align-items-center text-muted h2">
+                    <div class="col-12 text-white h2 p-5 justify-content-center {% if(numer_kroku == 2) %} bg-info {% else %} bg-secondary {% endif %}">
+                        Podstawowe dane pojazdu <i><img class="icon-top" src="{{ asset('icon/samochod2.svg') }}"></i>
+                    </div>
+                </div>
+                <div class="col-4 p-0 d-flex justify-content-center align-items-center text-muted h2">
+                    <div class="col-12 text-white h2 p-5 justify-content-center {% if(numer_kroku == 3 or numer_kroku == 4) %} bg-info {% else %} bg-secondary {% endif %}">
+                        Podsumowanie <i><img class="icon-top" src="{{ asset('icon/potwierdzenie.svg') }}"></i>
+                    </div>
+                </div>
+            </div>
+            {% block body %}{% endblock %}
+        </div>
+    </body>
+</html>

@@ -1,0 +1,32 @@
+@font-face {
+    font-family: lato-light;
+    src: url('../font/Lato-Light.ttf');
+}
+
+html, body{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-sizing: border-box;
+    font-family: lato-light;
+}
+input#termin{
+    width: 450px;
+}
+
+select.selectpicker{
+    padding: 10px 15px;
+    width: 450px;
+}
+
+.datepicker{
+    width: 450px;
+    height: 350px;
+}
+
+.icon-top{
+    width: 30px;
+    height: 30px;
+    margin-left: 20px;
+    margin-top: 5px;
+}
