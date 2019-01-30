@@ -44,7 +44,7 @@ abstract class MetodyAbstract
      */
     protected function uruchomMetodeApi(string $metoda, array $daneDodatkowe = [])
     {
-        $polaczenie = new Client(['base_uri' => 'http://api.parking.pl/v1/', 'http_errors' => false]);
+        $polaczenie = new Client(['base_uri' => $this->url, 'http_errors' => false]);
         $odpowiedzApi = null;
 
         $obiekt = null;

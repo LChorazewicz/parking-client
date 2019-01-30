@@ -6,8 +6,8 @@ export class ObslugaApi {
         return new Pobierz(domena);
     }
 
-    public pobierzObiektWaliduj(): Waliduj{
-        return new Waliduj();
+    public pobierzObiektWaliduj(domena: string): Waliduj{
+        return new Waliduj(domena);
     }
 
     public pobierzObiektAktualizuj(){

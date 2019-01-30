@@ -6,6 +6,7 @@
 parameters:
     locale: 'en'
     domena: 'http://parking.pl'
+    domena_api: 'http://api.parking.pl/v1/'
 
 services:
     # default configuration for services in *this* file
@@ -30,7 +31,7 @@ services:
 
     App\Library\Api\Metody:
         class: App\Library\Api\Metody
-        arguments: ['%domena%']
+        arguments: ['%domena_api%']
 
     kernel.listener.OnKernelExceptionListener:
         class: App\Listeners\OnKernelExceptionListener
