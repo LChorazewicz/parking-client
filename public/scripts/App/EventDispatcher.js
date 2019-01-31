@@ -1,4 +1,4 @@
-define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", "./lib/Walidacja/Walidacja", "./lib/ObslugaApi/ObslugaApi"], function (require, exports, kalendarz_1, OperacjeNaTablicach_1, Walidacja_1, ObslugaApi_1) {
+define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", "./lib/Walidacja/Walidacja", "./lib/ObslugaApi/ObslugaApi", "./lib/Loader"], function (require, exports, kalendarz_1, OperacjeNaTablicach_1, Walidacja_1, ObslugaApi_1, Loader_1) {
     "use strict";
     exports.__esModule = true;
     var EventDispatcher = /** @class */ (function () {
@@ -41,6 +41,7 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                         var alternatywa = false;
                         var listaBledow = [];
                         var termin = document.body.querySelector("#termin");
+                        var loader = new Loader_1.Loader();
                         if (!walidacja.walidujDaty(dni_1)) {
                             poprawnieZwalidowany = false;
                             listaBledow.push("Wybrany zakres dat nie jest poprawny!");
@@ -68,6 +69,7 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                             odswiez_1.pokazBladUzytkownikowi(ulicaSelect, "Wybrane ulica nie jest obsługiwana przez Nasz system!");
                         }
                         if (poprawnieZwalidowany) {
+                            loader.uruchom();
                             var obslugaApi = new ObslugaApi_1.ObslugaApi();
                             var strefa = obslugaApi.pobierzObiektPobierz(domena).pobierzIdStrefy(wojewodztwo, miasto, ulica);
                             if (strefa <= 0) {
@@ -76,6 +78,7 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                                 odswiez_1.pokazBladSystemowy("Wybrana strefa nie istnieje w Naszym systemie, spróbuj innej lokalizacji!");
                             }
                             if (dostepnosc) {
+                                loader.wylacz();
                                 var miejsca = obslugaApi.pobierzObiektPobierz(domena).sprawdzDostepnoscMiejscWStrefie(strefa, dni_1);
                                 if (miejsca.dostepnoscMiejsc && !miejsca.dostepnoscWybranychDat) {
                                     dostepnosc = false;
@@ -92,6 +95,7 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                                     }
                                 }
                                 else if (dostepnosc && !miejsca.dostepnoscMiejsc && miejsca.dostepnoscWybranychDat) {
+                                    loader.wylacz();
                                     dostepnosc = false;
                                     if (miejsca.alternatywa) {
                                         alternatywa = true;
@@ -106,6 +110,7 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                                     }
                                 }
                                 else {
+                                    loader.wylacz();
                                     if (dostepnosc && alternatywa || dostepnosc && !alternatywa) {
                                         alternatywa = false;
                                     }
@@ -114,6 +119,7 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                             }
                         }
                         if (dostepnosc && poprawnieZwalidowany) {
+                            loader.uruchom();
                             var form = document.createElement('form');
                             form.action = "/czy-moge-przejsc-na-krok-2";
                             form.method = "POST";

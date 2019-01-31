@@ -2,6 +2,7 @@ import {Kalendarz} from "./lib/kalendarz";
 import {OperacjeNaTablicach} from "./lib/OperacjeNaTablicach";
 import {Walidacja} from "./lib/Walidacja/Walidacja";
 import {ObslugaApi} from "./lib/ObslugaApi/ObslugaApi";
+import {Loader} from "./lib/Loader";
 
 export class EventDispatcher {
     public wstecz: HTMLElement;
@@ -59,6 +60,8 @@ export class EventDispatcher {
                     let alternatywa = false;
                     let listaBledow: Array<string> = [];
                     let termin: HTMLInputElement = document.body.querySelector("#termin");
+                    let loader = new Loader();
+
 
                     if (!walidacja.walidujDaty(dni)) {
                         poprawnieZwalidowany = false;
@@ -92,6 +95,7 @@ export class EventDispatcher {
                     }
 
                     if (poprawnieZwalidowany) {
+                        loader.uruchom();
                         let obslugaApi = new ObslugaApi();
                         let strefa = obslugaApi.pobierzObiektPobierz(domena).pobierzIdStrefy(wojewodztwo, miasto, ulica);
 
@@ -102,6 +106,7 @@ export class EventDispatcher {
                         }
 
                         if (dostepnosc) {
+                            loader.wylacz();
                             let miejsca = obslugaApi.pobierzObiektPobierz(domena).sprawdzDostepnoscMiejscWStrefie(strefa, dni);
 
                             if (miejsca.dostepnoscMiejsc && !miejsca.dostepnoscWybranychDat) {
@@ -119,6 +124,7 @@ export class EventDispatcher {
                                 }
 
                             } else if (dostepnosc && !miejsca.dostepnoscMiejsc && miejsca.dostepnoscWybranychDat) {
+                                loader.wylacz();
                                 dostepnosc = false;
                                 if (miejsca.alternatywa) {
                                     alternatywa = true;
@@ -132,6 +138,8 @@ export class EventDispatcher {
                                     odswiez.pokazBladSystemowy("W wybranym przedziale dat nie ma wolnych miejsc!");
                                 }
                             } else {
+                                loader.wylacz();
+
                                 if (dostepnosc && alternatywa || dostepnosc && !alternatywa) {
                                     alternatywa = false;
                                 }
@@ -142,6 +150,7 @@ export class EventDispatcher {
                     }
 
                     if (dostepnosc && poprawnieZwalidowany) {
+                        loader.uruchom();
                         let form: HTMLFormElement = document.createElement('form');
                         form.action = "/czy-moge-przejsc-na-krok-2";
                         form.method = "POST";

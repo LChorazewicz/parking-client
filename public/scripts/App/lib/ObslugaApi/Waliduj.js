@@ -2,8 +2,8 @@ define(["require", "exports", "../Util/Request"], function (require, exports, Re
     "use strict";
     exports.__esModule = true;
     var Waliduj = /** @class */ (function () {
-        function Waliduj() {
-            this.url = "http://parking.pl";
+        function Waliduj(domena) {
+            this.url = domena;
             this.request = new Request_1.Request();
         }
         Waliduj.prototype.sprawdzCzyStrefaIstnieje = function (wojewodztwo, miasto, ulica) {

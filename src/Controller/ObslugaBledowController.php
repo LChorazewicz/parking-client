@@ -19,7 +19,7 @@ class ObslugaBledowController extends AbstractController
         return $this->render('obsluga_bledow/index.html.twig', [
             'kod_bledu' => $session->pobierz('kod_bledu', 'OxOOOOOOOOO1'),
             'id_wniosku_api' => $session->pobierz('idWnioskuApi', "uwu-wledknla-danlk-j38-adsnd"),
-            'host' => $this->getParameter("domena")//todo: wyniesc do parametrow
+            'host' => $this->getParameter("domena")
         ]);
     }
 }

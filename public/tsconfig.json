@@ -68,6 +68,7 @@
     "scripts/App/lib/Util/Request.ts",
     "scripts/App/helper/Miesiac.ts",
     "scripts/App/EventDispatcher.ts",
-    "scripts/App/lib/OperacjeNaTablicach.ts"
+    "scripts/App/lib/OperacjeNaTablicach.ts",
+    "scripts/App/lib/Loader.ts"
   ]
 }

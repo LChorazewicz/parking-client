@@ -3,30 +3,110 @@
     src: url('../font/Lato-Light.ttf');
 }
 
-html, body{
+html, body {
     margin: 0;
     padding: 0;
     border: 0;
     box-sizing: border-box;
     font-family: lato-light;
 }
-input#termin{
+
+input#termin {
     width: 450px;
 }
 
-select.selectpicker{
+select.selectpicker {
     padding: 10px 15px;
     width: 450px;
 }
 
-.datepicker{
+.datepicker {
     width: 450px;
     height: 350px;
 }
 
-.icon-top{
+.icon-top {
     width: 30px;
     height: 30px;
     margin-left: 20px;
     margin-top: 5px;
+}
+
+#loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #c4c4c4b3;
+    display: none;
+    z-index: 1021;
+}
+
+.loader {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.loader-content{
+    margin-left: 45vw;
+    margin-top: 45vh;
+}
+.car__body {
+    animation: shake 0.2s ease-in-out infinite alternate;
+}
+
+.car__line {
+    transform-origin: center center;
+    stroke-dasharray: 22;
+    animation: line 0.8s ease-in-out infinite;
+    animation-fill-mode: both;
+}
+
+.car--top {
+    animation-delay: 0s;
+}
+
+.car--middle {
+    animation-delay: 0.2s;
+}
+
+.car--bottom {
+    animation-delay: 0.4s;
+}
+
+@keyframes shake {
+    0% {
+        transform: translateY(-1%);
+    }
+    100% {
+        transform: translateY(3%);
+    }
+}
+
+@keyframes line {
+    0% {
+        stroke-dashoffset: 22;
+    }
+
+    25% {
+        stroke-dashoffset: 22;
+    }
+
+    50% {
+        stroke-dashoffset: 0;
+    }
+
+    51% {
+        stroke-dashoffset: 0;
+    }
+
+    80% {
+        stroke-dashoffset: -22;
+    }
+
+    100% {
+        stroke-dashoffset: -22;
+    }
 }

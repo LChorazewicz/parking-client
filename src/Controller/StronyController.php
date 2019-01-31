@@ -96,8 +96,6 @@ class StronyController extends AbstractController
                 $this->metodyApi->aktualizujWniosek($this->sesja->pobierzWniosekApi(), StatusyWnioskuApi::WNIOSEK_KROK_1, []);
                 $this->sesja->odswiezSesjeApi();
             }
-            var_dump($this->sesja->pobierzWniosekApi());
-            var_dump($this->sesja->pobierzSesje());
         }catch (\Exception $e){
             $this->sesja->ustaw("kod_bledu", Generator::generujIdBledu());
             return $this->redirect("/obsluga/bledow");
@@ -129,8 +127,6 @@ class StronyController extends AbstractController
                 $this->sesja->odswiezSesjeApi();
             }
 
-            var_dump($this->sesja->pobierzWniosekApi());
-            var_dump($this->sesja->pobierzSesje());
         }catch (\Exception $e){
             $this->sesja->ustaw("kod_bledu", Generator::generujIdBledu());
             return $this->redirect("/obsluga/bledow");
@@ -162,9 +158,6 @@ class StronyController extends AbstractController
                 $this->sesja->odswiezSesjeApi();
             }
 
-            var_dump($this->sesja->pobierzWniosekApi());
-            var_dump($this->sesja->pobierzSesje());
-
         }catch (\Exception $e){
             $this->sesja->ustaw("kod_bledu", Generator::generujIdBledu());
             return $this->redirect("/obsluga/bledow");
@@ -194,9 +187,6 @@ class StronyController extends AbstractController
                 $this->metodyApi->aktualizujWniosek($this->sesja->pobierzWniosekApi(), StatusyWnioskuApi::WNIOSEK_PODSUMOWANIE, []);
                 $this->sesja->odswiezSesjeApi();
             }
-
-            var_dump($this->sesja->pobierzWniosekApi());
-            var_dump($this->sesja->pobierzSesje());
 
         }catch (\Exception $e){
             $this->sesja->ustaw("kod_bledu", Generator::generujIdBledu());
