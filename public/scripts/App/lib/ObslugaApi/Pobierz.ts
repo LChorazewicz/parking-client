@@ -25,15 +25,15 @@ export class Pobierz {
         this.request = new Request();
     }
 
-    public wojewodztwa(success: any, error: any){
-        return Request.pobierz(this.url + '/adresy/pobierz/wojewodztwa', "GET", "", success, error);
+    public wojewodztwa(success: any, error: any, beforeSend: any){
+        return Request.pobierz(this.url + '/adresy/pobierz/wojewodztwa', "GET", "", success, error, beforeSend);
     }
-    public miasta(idWojewodztwa: number, success: any, error: any){
-        return Request.pobierz(this.url + '/adresy/pobierz/miasta/' + idWojewodztwa, "GET", "", success, error);
+    public miasta(idWojewodztwa: number, success: any, error: any, beforeSend: any){
+        return Request.pobierz(this.url + '/adresy/pobierz/miasta/' + idWojewodztwa, "GET", "", success, error, beforeSend);
 
     }
-    public ulice(idMiasta: number, success: any, error: any){
-        return Request.pobierz(this.url + '/adresy/pobierz/ulice/' + idMiasta, "GET", "", success, error)
+    public ulice(idMiasta: number, success: any, error: any, beforeSend: any){
+        return Request.pobierz(this.url + '/adresy/pobierz/ulice/' + idMiasta, "GET", "", success, error, beforeSend)
     }
 
 

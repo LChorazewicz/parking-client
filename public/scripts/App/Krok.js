@@ -1,8 +1,9 @@
-define(["require", "exports", "./lib/ObslugaApi/Pobierz", "./lib/Util/Jquery"], function (require, exports, Pobierz_1, $) {
+define(["require", "exports", "./lib/ObslugaApi/Pobierz", "./lib/Util/Jquery", "./lib/Loader"], function (require, exports, Pobierz_1, $, Loader_1) {
     "use strict";
     exports.__esModule = true;
     var Krok = /** @class */ (function () {
         function Krok() {
+            this.loader = new Loader_1.Loader();
         }
         Krok.prototype.uruchom = function (numerKroku, domena) {
             console.info("Uruchamiam krok" + numerKroku);
@@ -12,6 +13,7 @@ define(["require", "exports", "./lib/ObslugaApi/Pobierz", "./lib/Util/Jquery"], 
                     var selectWojewodztwo_1 = document.getElementById("wojewodztwo");
                     var selectMiasto_1 = document.getElementById("miasto");
                     var selectUlica_1 = document.getElementById("ulica");
+                    var loader_1 = this.loader;
                     pobierz.wojewodztwa(function (wojewodztwa) {
                         if (wojewodztwa.blad === true) {
                             window.location.href = domena + '/wystapil/blad';
@@ -34,9 +36,11 @@ define(["require", "exports", "./lib/ObslugaApi/Pobierz", "./lib/Util/Jquery"], 
                         selectWojewodztwo_1.selectedIndex = 0;
                     }, function (response) {
                         console.log("Wystąpił błąd systemu, spróbuj ponownie za chwilę", response);
-                    });
+                    }, function () { });
                     selectMiasto_1.setAttribute("disabled", "true");
                     selectUlica_1.setAttribute("disabled", "true");
+                    selectMiasto_1.selectedIndex = 0;
+                    selectUlica_1.selectedIndex = 0;
                     $("#wojewodztwo").on("change", function () {
                         $.each(selectMiasto_1.options, function (index) {
                             selectMiasto_1.options.remove(index);
@@ -57,8 +61,12 @@ define(["require", "exports", "./lib/ObslugaApi/Pobierz", "./lib/Util/Jquery"], 
                                 option.text = obj.nazwa.toString();
                                 selectMiasto_1.appendChild(option);
                             });
+                            loader_1.wylacz();
                         }, function (response) {
+                            loader_1.wylacz();
                             console.log("Wystąpił błąd systemu, spróbuj ponownie za chwilę", response);
+                        }, function () {
+                            loader_1.uruchom();
                         });
                         selectMiasto_1.selectedIndex = 0;
                         selectUlica_1.selectedIndex = 0;
@@ -85,8 +93,12 @@ define(["require", "exports", "./lib/ObslugaApi/Pobierz", "./lib/Util/Jquery"], 
                                 option.text = obj.nazwa.toString();
                                 selectUlica_1.appendChild(option);
                             });
+                            loader_1.wylacz();
                         }, function (response) {
+                            loader_1.wylacz();
                             console.log("Wystąpił błąd systemu, spróbuj ponownie za chwilę", response);
+                        }, function () {
+                            loader_1.uruchom();
                         });
                         selectUlica_1.selectedIndex = 0;
                         selectUlica_1.removeAttribute("disabled");
@@ -94,6 +106,9 @@ define(["require", "exports", "./lib/ObslugaApi/Pobierz", "./lib/Util/Jquery"], 
                     break;
                 }
                 case 2: {
+                    break;
+                }
+                case 3: {
                     break;
                 }
             }

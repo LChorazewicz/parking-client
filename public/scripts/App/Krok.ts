@@ -1,8 +1,15 @@
 import {KrokInterface} from "./KrokInterface";
 import {Pobierz} from "./lib/ObslugaApi/Pobierz";
 import * as $ from "./lib/Util/Jquery";
+import {Loader} from "./lib/Loader";
 
 export class Krok implements KrokInterface {
+    private loader: Loader;
+
+    constructor() {
+        this.loader = new Loader();
+    }
+
     uruchom(numerKroku: number, domena: string): void {
         console.info("Uruchamiam krok" + numerKroku);
         let pobierz: Pobierz = new Pobierz(domena);
@@ -11,7 +18,7 @@ export class Krok implements KrokInterface {
                 let selectWojewodztwo: HTMLSelectElement = document.getElementById("wojewodztwo") as HTMLSelectElement;
                 let selectMiasto: HTMLSelectElement = document.getElementById("miasto") as HTMLSelectElement;
                 let selectUlica: HTMLSelectElement = document.getElementById("ulica") as HTMLSelectElement;
-
+                let loader = this.loader;
                 pobierz.wojewodztwa(function (wojewodztwa) {
                     if(wojewodztwa.blad === true){
                         window.location.href = domena + '/wystapil/blad';
@@ -34,14 +41,16 @@ export class Krok implements KrokInterface {
                         selectWojewodztwo.appendChild(option);
                     });
                     selectWojewodztwo.selectedIndex = 0;
-
                 }, function (response) {
                     console.log("Wystąpił błąd systemu, spróbuj ponownie za chwilę", response);
-                });
+                }, function () {});
 
 
                 selectMiasto.setAttribute("disabled", "true");
                 selectUlica.setAttribute("disabled", "true");
+
+                selectMiasto.selectedIndex = 0;
+                selectUlica.selectedIndex = 0;
 
                 $("#wojewodztwo").on("change", function () {
                     $.each(selectMiasto.options, function (index) {
@@ -66,8 +75,12 @@ export class Krok implements KrokInterface {
                             option.text = obj.nazwa.toString();
                             selectMiasto.appendChild(option);
                         });
+                        loader.wylacz();
                     }, function (response) {
+                        loader.wylacz();
                         console.log("Wystąpił błąd systemu, spróbuj ponownie za chwilę", response)
+                    }, function () {
+                        loader.uruchom();
                     });
 
                     selectMiasto.selectedIndex = 0;
@@ -99,8 +112,12 @@ export class Krok implements KrokInterface {
                             option.text = obj.nazwa.toString();
                             selectUlica.appendChild(option);
                         });
+                        loader.wylacz();
                     }, function (response) {
+                        loader.wylacz();
                         console.log("Wystąpił błąd systemu, spróbuj ponownie za chwilę", response)
+                    }, function () {
+                        loader.uruchom();
                     });
 
                     selectUlica.selectedIndex = 0;
@@ -112,6 +129,9 @@ export class Krok implements KrokInterface {
 
             case 2: {
 
+                break;
+            }
+            case 3: {
                 break;
             }
         }

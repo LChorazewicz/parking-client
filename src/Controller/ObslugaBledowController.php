@@ -3,10 +3,10 @@
 namespace App\Controller;
 
 use App\Library\Sesja;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ObslugaBledowController extends AbstractController
+class ObslugaBledowController extends Controller
 {
     /**
      * @Route("/obsluga/bledow", name="obsluga_bledow")

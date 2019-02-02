@@ -13,7 +13,7 @@ export class Waliduj {
         return true;
     }
 
-    sprawdzCzyKodDostepuJestPoprawny(kodDostepu: string, success: any, error: any): void {
-        Request.pobierz(this.url + "/sprawdz/kod-sms/"+kodDostepu, "GET", "", success, error);
+    sprawdzCzyKodDostepuJestPoprawny(kodDostepu: string, success: any, error: any, beforeSend): void {
+        Request.pobierz(this.url + "/sprawdz/kod-sms/"+kodDostepu, "GET", "", success, error, beforeSend);
     }
 }

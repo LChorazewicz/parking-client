@@ -6,14 +6,14 @@ define(["require", "exports", "../Util/Request"], function (require, exports, Re
             this.url = domena;
             this.request = new Request_1.Request();
         }
-        Pobierz.prototype.wojewodztwa = function (success, error) {
-            return Request_1.Request.pobierz(this.url + '/adresy/pobierz/wojewodztwa', "GET", "", success, error);
+        Pobierz.prototype.wojewodztwa = function (success, error, beforeSend) {
+            return Request_1.Request.pobierz(this.url + '/adresy/pobierz/wojewodztwa', "GET", "", success, error, beforeSend);
         };
-        Pobierz.prototype.miasta = function (idWojewodztwa, success, error) {
-            return Request_1.Request.pobierz(this.url + '/adresy/pobierz/miasta/' + idWojewodztwa, "GET", "", success, error);
+        Pobierz.prototype.miasta = function (idWojewodztwa, success, error, beforeSend) {
+            return Request_1.Request.pobierz(this.url + '/adresy/pobierz/miasta/' + idWojewodztwa, "GET", "", success, error, beforeSend);
         };
-        Pobierz.prototype.ulice = function (idMiasta, success, error) {
-            return Request_1.Request.pobierz(this.url + '/adresy/pobierz/ulice/' + idMiasta, "GET", "", success, error);
+        Pobierz.prototype.ulice = function (idMiasta, success, error, beforeSend) {
+            return Request_1.Request.pobierz(this.url + '/adresy/pobierz/ulice/' + idMiasta, "GET", "", success, error, beforeSend);
         };
         Pobierz.prototype.pobierzIdStrefy = function (wojewodztwo, miasto, ulica) {
             return 12448;

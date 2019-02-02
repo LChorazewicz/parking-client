@@ -15,9 +15,11 @@ export class EventDispatcher {
     private przyciskPrzejdzNa3Krok: Element;
     private przyciskPrzejdzNaPodsumowanie: Element;
     private przyciskPrzejdzNaStroneGlowna: Element;
+    private loader: Loader;
 
     public constructor() {
         this.operacjeNaTablicach = new OperacjeNaTablicach();
+        this.loader = new Loader();
     }
 
     public uruchom(numerKroku: number, domena: string) {
@@ -32,25 +34,25 @@ export class EventDispatcher {
                 this.doProdu = document.body.querySelector(".do_przodu");
                 this.przyciskPrzejdzNa2Krok = document.body.querySelector("#przejdzNa2Krok");
                 this.dniZKalendarza = document.querySelector(".cialo");
-                let odswiez = this;
+                let _this = this;
                 let dni = this.dniWybrane;
 
                 this.wstecz.addEventListener("click", function () {
                     kalendarz.miesiacWstecz();
                     kalendarz.zaznaczDni(dni);
-                    odswiez.odswiez();
+                    _this.odswiez();
                 });
 
                 this.doProdu.addEventListener("click", function () {
                     kalendarz.miesiacWPrzod();
                     kalendarz.zaznaczDni(dni);
-                    odswiez.odswiez();
+                    _this.odswiez();
                 });
 
                 this.doProdu.addEventListener("click", function () {
                     kalendarz.miesiacWPrzod();
                     kalendarz.zaznaczDni(dni);
-                    odswiez.odswiez();
+                    _this.odswiez();
                 });
 
                 this.przyciskPrzejdzNa2Krok.addEventListener("click", function () {
@@ -60,13 +62,11 @@ export class EventDispatcher {
                     let alternatywa = false;
                     let listaBledow: Array<string> = [];
                     let termin: HTMLInputElement = document.body.querySelector("#termin");
-                    let loader = new Loader();
-
 
                     if (!walidacja.walidujDaty(dni)) {
                         poprawnieZwalidowany = false;
                         listaBledow.push("Wybrany zakres dat nie jest poprawny!");
-                        odswiez.pokazBladUzytkownikowi(termin, "Wybrany zakres dat nie jest poprawny!")
+                        _this.pokazBladUzytkownikowi(termin, "Wybrany zakres dat nie jest poprawny!")
                     }
 
                     let wojewodztwoSelect: HTMLSelectElement = document.body.querySelector("select#wojewodztwo");
@@ -79,34 +79,32 @@ export class EventDispatcher {
                     if (poprawnieZwalidowany && !walidacja.naturalNumber(wojewodztwo)) {
                         poprawnieZwalidowany = false;
                         listaBledow.push("Wybrane województwo nie jest obsługiwane przez Nasz system!");
-                        odswiez.pokazBladUzytkownikowi(wojewodztwoSelect,"Wybrane województwo nie jest obsługiwane przez Nasz system!");
+                        _this.pokazBladUzytkownikowi(wojewodztwoSelect,"Wybrane województwo nie jest obsługiwane przez Nasz system!");
                     }
 
                     if (poprawnieZwalidowany && !walidacja.naturalNumber(miasto)) {
                         poprawnieZwalidowany = false;
                         listaBledow.push("Wybrane miasto nie jest obsługiwane przez Nasz system!");
-                        odswiez.pokazBladUzytkownikowi(miastoSelect,"Wybrane miasto nie jest obsługiwane przez Nasz system!");
+                        _this.pokazBladUzytkownikowi(miastoSelect,"Wybrane miasto nie jest obsługiwane przez Nasz system!");
                     }
 
                     if (poprawnieZwalidowany && !walidacja.naturalNumber(ulica)) {
                         poprawnieZwalidowany = false;
                         listaBledow.push("Wybrane ulica nie jest obsługiwana przez Nasz system!");
-                        odswiez.pokazBladUzytkownikowi(ulicaSelect,"Wybrane ulica nie jest obsługiwana przez Nasz system!");
+                        _this.pokazBladUzytkownikowi(ulicaSelect,"Wybrane ulica nie jest obsługiwana przez Nasz system!");
                     }
 
                     if (poprawnieZwalidowany) {
-                        loader.uruchom();
                         let obslugaApi = new ObslugaApi();
                         let strefa = obslugaApi.pobierzObiektPobierz(domena).pobierzIdStrefy(wojewodztwo, miasto, ulica);
 
                         if (strefa <= 0) {
                             dostepnosc = false;
                             listaBledow.push("Wybrana strefa nie istnieje w Naszym systemie, spróbuj innej lokalizacji!");
-                            odswiez.pokazBladSystemowy("Wybrana strefa nie istnieje w Naszym systemie, spróbuj innej lokalizacji!");
+                            _this.pokazBladSystemowy("Wybrana strefa nie istnieje w Naszym systemie, spróbuj innej lokalizacji!");
                         }
 
                         if (dostepnosc) {
-                            loader.wylacz();
                             let miejsca = obslugaApi.pobierzObiektPobierz(domena).sprawdzDostepnoscMiejscWStrefie(strefa, dni);
 
                             if (miejsca.dostepnoscMiejsc && !miejsca.dostepnoscWybranychDat) {
@@ -115,31 +113,28 @@ export class EventDispatcher {
                                     alternatywa = true;
                                     listaBledow.push("W wybranej lokalizacji nie ma wolnych miejsc w wybranym zakresie dat, ale nic straconego! " +
                                         "Zaznaczyliści w kalendarzu najbardziej zbliżoną ofertę, sprawdź czy oferta Ci odpowiada!");
-                                    odswiez.pokazBladSystemowy("W wybranej lokalizacji nie ma wolnych miejsc w wybranym zakresie dat, ale nic straconego! " +
+                                    _this.pokazBladSystemowy("W wybranej lokalizacji nie ma wolnych miejsc w wybranym zakresie dat, ale nic straconego! " +
                                         "Zaznaczyliści w kalendarzu najbardziej zbliżoną ofertę, sprawdź czy oferta Ci odpowiada!");
 
                                 } else {
                                     listaBledow.push("W wybranym przedziale dat nie ma wolnych miejsc!");
-                                    odswiez.pokazBladSystemowy("W wybranym przedziale dat nie ma wolnych miejsc!");
+                                    _this.pokazBladSystemowy("W wybranym przedziale dat nie ma wolnych miejsc!");
                                 }
 
                             } else if (dostepnosc && !miejsca.dostepnoscMiejsc && miejsca.dostepnoscWybranychDat) {
-                                loader.wylacz();
                                 dostepnosc = false;
                                 if (miejsca.alternatywa) {
                                     alternatywa = true;
                                     listaBledow.push("W wybranej lokalizacji nie ma wolnych miejsc w wybranym zakresie dat, ale nic straconego! " +
                                         "Zaznaczyliści w kalendarzu najbardziej zbliżoną ofertę, sprawdź czy oferta Ci odpowiada!");
-                                    odswiez.pokazBladSystemowy("W wybranej lokalizacji nie ma wolnych miejsc w wybranym zakresie dat, ale nic straconego! " +
+                                    _this.pokazBladSystemowy("W wybranej lokalizacji nie ma wolnych miejsc w wybranym zakresie dat, ale nic straconego! " +
                                         "Zaznaczyliści w kalendarzu najbardziej zbliżoną ofertę, sprawdź czy oferta Ci odpowiada!");
 
                                 } else {
                                     listaBledow.push("W wybranym przedziale dat nie ma wolnych miejsc!");
-                                    odswiez.pokazBladSystemowy("W wybranym przedziale dat nie ma wolnych miejsc!");
+                                    _this.pokazBladSystemowy("W wybranym przedziale dat nie ma wolnych miejsc!");
                                 }
                             } else {
-                                loader.wylacz();
-
                                 if (dostepnosc && alternatywa || dostepnosc && !alternatywa) {
                                     alternatywa = false;
                                 }
@@ -150,7 +145,7 @@ export class EventDispatcher {
                     }
 
                     if (dostepnosc && poprawnieZwalidowany) {
-                        loader.uruchom();
+                        _this.loader.uruchom(true);
                         let form: HTMLFormElement = document.createElement('form');
                         form.action = "/czy-moge-przejsc-na-krok-2";
                         form.method = "POST";
@@ -183,14 +178,10 @@ export class EventDispatcher {
                     if (id[2]) {
                         id[2] = id[2].split("T")[0];
                         let data: Date = new Date(parseInt(id[0]), parseInt(id[1]) - 1, parseInt(id[2]) + 1);
-                        odswiez.sprobujDodacElementDoTablicy(data);
+                        _this.sprobujDodacElementDoTablicy(data);
                         kalendarz.odswiezKalendarzZZaznaczonymiDniami(dni);
-                        odswiez.odswiez();
+                        _this.odswiez();
                     }
-                });
-
-                $("select, input").on("change", function () {
-                    // $(this).switchClass("d-inline", "d-none");
                 });
 
                 break;
@@ -316,6 +307,7 @@ export class EventDispatcher {
                         form.append(zgoda_4Input);
 
                         document.body.appendChild(form);
+                        _this.loader.uruchom(true);
                         $(form).submit();
                     } else {
                         console.log(listaBledow);
@@ -343,19 +335,21 @@ export class EventDispatcher {
                     if (poprawnieZwalidowany) {
                         let obslugaApi = new ObslugaApi();
                         // obslugaApi.pobierzObiektWaliduj().sprawdzCzyKodDostepuJestPoprawny(kodSms.value, function (response) {
-                            let form: HTMLFormElement = document.createElement('form');
-                            form.action = "/czy-moge-przejsc-na-podsumowanie";
-                            form.method = "POST";
-                            // form.style("display", "none");
+                        let form: HTMLFormElement = document.createElement('form');
+                        form.action = "/czy-moge-przejsc-na-podsumowanie";
+                        form.method = "POST";
+                        // form.style("display", "none");
 
-                            let apiKey: HTMLInputElement = document.createElement('input');
-                            apiKey.setAttribute("type", "hidden");
-                            apiKey.setAttribute("name", "kod-sms");
-                            apiKey.setAttribute("value", kodSms.value);
-                            form.append(apiKey);
+                        let apiKey: HTMLInputElement = document.createElement('input');
+                        apiKey.setAttribute("type", "hidden");
+                        apiKey.setAttribute("name", "kod-sms");
+                        apiKey.setAttribute("value", kodSms.value);
+                        form.append(apiKey);
 
-                            document.body.appendChild(form);
-                            $(form).submit();
+                        document.body.appendChild(form);
+                        _this.loader.uruchom(true);
+
+                        $(form).submit();
                         // }, function (response) {
                         //     poprawnieZwalidowany = false;
                         //     listaBledow.push("Podany kod dostępu jest niepoprawny.")
@@ -369,9 +363,11 @@ export class EventDispatcher {
             }
 
             case 4: {
+                let _this = this;
                 this.przyciskPrzejdzNaStroneGlowna = document.body.querySelector("#przejdzNaStroneGlowna");
                 this.przyciskPrzejdzNaStroneGlowna.addEventListener("click", function (e) {
                     window.location.href = "/krok-1";
+                    _this.loader.uruchom(true);
                 });
                 break;
             }
@@ -416,11 +412,6 @@ export class EventDispatcher {
                 event.odswiez();
             }
         });
-
-        // $("select, input").on("change", function () {
-        //     console.log(this);
-        //     $(this).switchClass("d-inline", "d-none");
-        // });
 
         html.addEventListener("change", function () {
             console.log("234", inputs);//srednio dziala

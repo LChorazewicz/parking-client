@@ -5,12 +5,16 @@ define(["require", "exports"], function (require, exports) {
         function Loader() {
             this.obiektLoader = null;
             this.obiektLoader = $('#loader');
+            this.obiektKontener = $('#page-body');
         }
-        Loader.prototype.uruchom = function () {
+        Loader.prototype.uruchom = function (zakryjDokument) {
             this.obiektLoader.show();
+            if (zakryjDokument && zakryjDokument == true) {
+                this.obiektKontener.fadeOut();
+            }
         };
         Loader.prototype.wylacz = function () {
-            this.obiektLoader.hide();
+            this.obiektLoader.fadeOut();
         };
         return Loader;
     }());

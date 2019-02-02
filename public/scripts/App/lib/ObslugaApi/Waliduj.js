@@ -9,8 +9,8 @@ define(["require", "exports", "../Util/Request"], function (require, exports, Re
         Waliduj.prototype.sprawdzCzyStrefaIstnieje = function (wojewodztwo, miasto, ulica) {
             return true;
         };
-        Waliduj.prototype.sprawdzCzyKodDostepuJestPoprawny = function (kodDostepu, success, error) {
-            Request_1.Request.pobierz(this.url + "/sprawdz/kod-sms/" + kodDostepu, "GET", "", success, error);
+        Waliduj.prototype.sprawdzCzyKodDostepuJestPoprawny = function (kodDostepu, success, error, beforeSend) {
+            Request_1.Request.pobierz(this.url + "/sprawdz/kod-sms/" + kodDostepu, "GET", "", success, error, beforeSend);
         };
         return Waliduj;
     }());

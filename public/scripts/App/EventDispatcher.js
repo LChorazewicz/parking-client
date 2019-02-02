@@ -5,6 +5,7 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
         function EventDispatcher() {
             this.dniWybrane = [];
             this.operacjeNaTablicach = new OperacjeNaTablicach_1.OperacjeNaTablicach();
+            this.loader = new Loader_1.Loader();
         }
         EventDispatcher.prototype.uruchom = function (numerKroku, domena) {
             switch (numerKroku) {
@@ -17,22 +18,22 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                     this.doProdu = document.body.querySelector(".do_przodu");
                     this.przyciskPrzejdzNa2Krok = document.body.querySelector("#przejdzNa2Krok");
                     this.dniZKalendarza = document.querySelector(".cialo");
-                    var odswiez_1 = this;
+                    var _this_1 = this;
                     var dni_1 = this.dniWybrane;
                     this.wstecz.addEventListener("click", function () {
                         kalendarz_2.miesiacWstecz();
                         kalendarz_2.zaznaczDni(dni_1);
-                        odswiez_1.odswiez();
+                        _this_1.odswiez();
                     });
                     this.doProdu.addEventListener("click", function () {
                         kalendarz_2.miesiacWPrzod();
                         kalendarz_2.zaznaczDni(dni_1);
-                        odswiez_1.odswiez();
+                        _this_1.odswiez();
                     });
                     this.doProdu.addEventListener("click", function () {
                         kalendarz_2.miesiacWPrzod();
                         kalendarz_2.zaznaczDni(dni_1);
-                        odswiez_1.odswiez();
+                        _this_1.odswiez();
                     });
                     this.przyciskPrzejdzNa2Krok.addEventListener("click", function () {
                         var walidacja = new Walidacja_1.Walidacja();
@@ -41,11 +42,10 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                         var alternatywa = false;
                         var listaBledow = [];
                         var termin = document.body.querySelector("#termin");
-                        var loader = new Loader_1.Loader();
                         if (!walidacja.walidujDaty(dni_1)) {
                             poprawnieZwalidowany = false;
                             listaBledow.push("Wybrany zakres dat nie jest poprawny!");
-                            odswiez_1.pokazBladUzytkownikowi(termin, "Wybrany zakres dat nie jest poprawny!");
+                            _this_1.pokazBladUzytkownikowi(termin, "Wybrany zakres dat nie jest poprawny!");
                         }
                         var wojewodztwoSelect = document.body.querySelector("select#wojewodztwo");
                         var wojewodztwo = (wojewodztwoSelect.options[wojewodztwoSelect.selectedIndex].value != 'undefined') ? parseInt(wojewodztwoSelect.options[wojewodztwoSelect.selectedIndex].value) : 0;
@@ -56,29 +56,27 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                         if (poprawnieZwalidowany && !walidacja.naturalNumber(wojewodztwo)) {
                             poprawnieZwalidowany = false;
                             listaBledow.push("Wybrane województwo nie jest obsługiwane przez Nasz system!");
-                            odswiez_1.pokazBladUzytkownikowi(wojewodztwoSelect, "Wybrane województwo nie jest obsługiwane przez Nasz system!");
+                            _this_1.pokazBladUzytkownikowi(wojewodztwoSelect, "Wybrane województwo nie jest obsługiwane przez Nasz system!");
                         }
                         if (poprawnieZwalidowany && !walidacja.naturalNumber(miasto)) {
                             poprawnieZwalidowany = false;
                             listaBledow.push("Wybrane miasto nie jest obsługiwane przez Nasz system!");
-                            odswiez_1.pokazBladUzytkownikowi(miastoSelect, "Wybrane miasto nie jest obsługiwane przez Nasz system!");
+                            _this_1.pokazBladUzytkownikowi(miastoSelect, "Wybrane miasto nie jest obsługiwane przez Nasz system!");
                         }
                         if (poprawnieZwalidowany && !walidacja.naturalNumber(ulica)) {
                             poprawnieZwalidowany = false;
                             listaBledow.push("Wybrane ulica nie jest obsługiwana przez Nasz system!");
-                            odswiez_1.pokazBladUzytkownikowi(ulicaSelect, "Wybrane ulica nie jest obsługiwana przez Nasz system!");
+                            _this_1.pokazBladUzytkownikowi(ulicaSelect, "Wybrane ulica nie jest obsługiwana przez Nasz system!");
                         }
                         if (poprawnieZwalidowany) {
-                            loader.uruchom();
                             var obslugaApi = new ObslugaApi_1.ObslugaApi();
                             var strefa = obslugaApi.pobierzObiektPobierz(domena).pobierzIdStrefy(wojewodztwo, miasto, ulica);
                             if (strefa <= 0) {
                                 dostepnosc = false;
                                 listaBledow.push("Wybrana strefa nie istnieje w Naszym systemie, spróbuj innej lokalizacji!");
-                                odswiez_1.pokazBladSystemowy("Wybrana strefa nie istnieje w Naszym systemie, spróbuj innej lokalizacji!");
+                                _this_1.pokazBladSystemowy("Wybrana strefa nie istnieje w Naszym systemie, spróbuj innej lokalizacji!");
                             }
                             if (dostepnosc) {
-                                loader.wylacz();
                                 var miejsca = obslugaApi.pobierzObiektPobierz(domena).sprawdzDostepnoscMiejscWStrefie(strefa, dni_1);
                                 if (miejsca.dostepnoscMiejsc && !miejsca.dostepnoscWybranychDat) {
                                     dostepnosc = false;
@@ -86,31 +84,29 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                                         alternatywa = true;
                                         listaBledow.push("W wybranej lokalizacji nie ma wolnych miejsc w wybranym zakresie dat, ale nic straconego! " +
                                             "Zaznaczyliści w kalendarzu najbardziej zbliżoną ofertę, sprawdź czy oferta Ci odpowiada!");
-                                        odswiez_1.pokazBladSystemowy("W wybranej lokalizacji nie ma wolnych miejsc w wybranym zakresie dat, ale nic straconego! " +
+                                        _this_1.pokazBladSystemowy("W wybranej lokalizacji nie ma wolnych miejsc w wybranym zakresie dat, ale nic straconego! " +
                                             "Zaznaczyliści w kalendarzu najbardziej zbliżoną ofertę, sprawdź czy oferta Ci odpowiada!");
                                     }
                                     else {
                                         listaBledow.push("W wybranym przedziale dat nie ma wolnych miejsc!");
-                                        odswiez_1.pokazBladSystemowy("W wybranym przedziale dat nie ma wolnych miejsc!");
+                                        _this_1.pokazBladSystemowy("W wybranym przedziale dat nie ma wolnych miejsc!");
                                     }
                                 }
                                 else if (dostepnosc && !miejsca.dostepnoscMiejsc && miejsca.dostepnoscWybranychDat) {
-                                    loader.wylacz();
                                     dostepnosc = false;
                                     if (miejsca.alternatywa) {
                                         alternatywa = true;
                                         listaBledow.push("W wybranej lokalizacji nie ma wolnych miejsc w wybranym zakresie dat, ale nic straconego! " +
                                             "Zaznaczyliści w kalendarzu najbardziej zbliżoną ofertę, sprawdź czy oferta Ci odpowiada!");
-                                        odswiez_1.pokazBladSystemowy("W wybranej lokalizacji nie ma wolnych miejsc w wybranym zakresie dat, ale nic straconego! " +
+                                        _this_1.pokazBladSystemowy("W wybranej lokalizacji nie ma wolnych miejsc w wybranym zakresie dat, ale nic straconego! " +
                                             "Zaznaczyliści w kalendarzu najbardziej zbliżoną ofertę, sprawdź czy oferta Ci odpowiada!");
                                     }
                                     else {
                                         listaBledow.push("W wybranym przedziale dat nie ma wolnych miejsc!");
-                                        odswiez_1.pokazBladSystemowy("W wybranym przedziale dat nie ma wolnych miejsc!");
+                                        _this_1.pokazBladSystemowy("W wybranym przedziale dat nie ma wolnych miejsc!");
                                     }
                                 }
                                 else {
-                                    loader.wylacz();
                                     if (dostepnosc && alternatywa || dostepnosc && !alternatywa) {
                                         alternatywa = false;
                                     }
@@ -119,7 +115,7 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                             }
                         }
                         if (dostepnosc && poprawnieZwalidowany) {
-                            loader.uruchom();
+                            _this_1.loader.uruchom(true);
                             var form = document.createElement('form');
                             form.action = "/czy-moge-przejsc-na-krok-2";
                             form.method = "POST";
@@ -147,20 +143,17 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                         if (id[2]) {
                             id[2] = id[2].split("T")[0];
                             var data_1 = new Date(parseInt(id[0]), parseInt(id[1]) - 1, parseInt(id[2]) + 1);
-                            odswiez_1.sprobujDodacElementDoTablicy(data_1);
+                            _this_1.sprobujDodacElementDoTablicy(data_1);
                             kalendarz_2.odswiezKalendarzZZaznaczonymiDniami(dni_1);
-                            odswiez_1.odswiez();
+                            _this_1.odswiez();
                         }
-                    });
-                    $("select, input").on("change", function () {
-                        // $(this).switchClass("d-inline", "d-none");
                     });
                     break;
                 }
                 case 2: {
                     this.przyciskPrzejdzNa3Krok = document.body.querySelector("#przejdzNa3Krok");
                     var rejestracja_1 = document.body.querySelector("#rejestracja"), imie_1 = document.body.querySelector("#imie"), nazwisko_1 = document.body.querySelector("#nazwisko"), telefon_1 = document.body.querySelector("#telefon"), zgoda1_1 = document.body.querySelector("#zgoda_1"), zgoda2_1 = document.body.querySelector("#zgoda_2"), zgoda3_1 = document.body.querySelector("#zgoda_3"), zgoda4_1 = document.body.querySelector("#zgoda_4");
-                    var _this_1 = this;
+                    var _this_2 = this;
                     this.przyciskPrzejdzNa3Krok.addEventListener("click", function (e) {
                         var walidacja = new Walidacja_1.Walidacja();
                         var poprawnieZwalidowany = true;
@@ -168,42 +161,42 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                         if (walidacja.isEmpty(rejestracja_1.value)) {
                             poprawnieZwalidowany = false;
                             listaBledow.push("Niepoprawna wartość w polu numer rejestracyjny");
-                            _this_1.pokazBladUzytkownikowi(rejestracja_1, "Niepoprawna wartość w polu numer rejestracyjny");
+                            _this_2.pokazBladUzytkownikowi(rejestracja_1, "Niepoprawna wartość w polu numer rejestracyjny");
                         }
                         if (poprawnieZwalidowany && walidacja.isEmpty(imie_1.value)) {
                             poprawnieZwalidowany = false;
                             listaBledow.push("Niepoprawna wartość w polu imie");
-                            _this_1.pokazBladUzytkownikowi(imie_1, "Niepoprawna wartość w polu imie");
+                            _this_2.pokazBladUzytkownikowi(imie_1, "Niepoprawna wartość w polu imie");
                         }
                         if (poprawnieZwalidowany && walidacja.isEmpty(nazwisko_1.value)) {
                             poprawnieZwalidowany = false;
                             listaBledow.push("Niepoprawna wartość w polu nazwisko");
-                            _this_1.pokazBladUzytkownikowi(nazwisko_1, "Niepoprawna wartość w polu nazwisko");
+                            _this_2.pokazBladUzytkownikowi(nazwisko_1, "Niepoprawna wartość w polu nazwisko");
                         }
                         if (poprawnieZwalidowany && walidacja.isEmpty(telefon_1.value)) {
                             poprawnieZwalidowany = false;
                             listaBledow.push("Niepoprawna wartość w polu numer telefon");
-                            _this_1.pokazBladUzytkownikowi(telefon_1, "Niepoprawna wartość w polu telefon");
+                            _this_2.pokazBladUzytkownikowi(telefon_1, "Niepoprawna wartość w polu telefon");
                         }
                         if (poprawnieZwalidowany && !walidacja.isChecked(zgoda1_1)) {
                             poprawnieZwalidowany = false;
                             listaBledow.push("Nie zaznaczono wszystkich wymaganych zgód");
-                            _this_1.pokazBladUzytkownikowi(zgoda1_1, "Niepoprawna wartość w polu telefon");
+                            _this_2.pokazBladUzytkownikowi(zgoda1_1, "Niepoprawna wartość w polu telefon");
                         }
                         if (poprawnieZwalidowany && !walidacja.isChecked(zgoda2_1)) {
                             poprawnieZwalidowany = false;
                             listaBledow.push("Nie zaznaczono wszystkich wymaganych zgód");
-                            _this_1.pokazBladUzytkownikowi(zgoda2_1, "Nie zaznaczono wszystkich wymaganych zgód");
+                            _this_2.pokazBladUzytkownikowi(zgoda2_1, "Nie zaznaczono wszystkich wymaganych zgód");
                         }
                         if (poprawnieZwalidowany && !walidacja.isChecked(zgoda3_1)) {
                             poprawnieZwalidowany = false;
                             listaBledow.push("Nie zaznaczono wszystkich wymaganych zgód");
-                            _this_1.pokazBladUzytkownikowi(zgoda3_1, "Nie zaznaczono wszystkich wymaganych zgód");
+                            _this_2.pokazBladUzytkownikowi(zgoda3_1, "Nie zaznaczono wszystkich wymaganych zgód");
                         }
                         if (poprawnieZwalidowany && !walidacja.isChecked(zgoda4_1)) {
                             poprawnieZwalidowany = false;
                             listaBledow.push("Nie zaznaczono wszystkich wymaganych zgód");
-                            _this_1.pokazBladUzytkownikowi(zgoda4_1, "Nie zaznaczono wszystkich wymaganych zgód");
+                            _this_2.pokazBladUzytkownikowi(zgoda4_1, "Nie zaznaczono wszystkich wymaganych zgód");
                         }
                         if (poprawnieZwalidowany) {
                             var form = document.createElement('form');
@@ -251,6 +244,7 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                             zgoda_4Input.setAttribute("value", zgoda4_1.value);
                             form.append(zgoda_4Input);
                             document.body.appendChild(form);
+                            _this_2.loader.uruchom(true);
                             $(form).submit();
                         }
                         else {
@@ -261,7 +255,7 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                 }
                 case 3: {
                     this.przyciskPrzejdzNaPodsumowanie = document.body.querySelector("#przejdzNaPodsumowanie");
-                    var _this_2 = this;
+                    var _this_3 = this;
                     this.przyciskPrzejdzNaPodsumowanie.addEventListener("click", function (e) {
                         var walidacja = new Walidacja_1.Walidacja();
                         var poprawnieZwalidowany = true;
@@ -270,7 +264,7 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                         if (walidacja.isEmpty(kodSms.value) && kodSms.value.length !== 6) {
                             poprawnieZwalidowany = false;
                             listaBledow.push("Wpisz kod dostępu z wiadomośći sms");
-                            _this_2.pokazBladUzytkownikowi(kodSms, "Wpisz kod dostępu z wiadomośći sms");
+                            _this_3.pokazBladUzytkownikowi(kodSms, "Wpisz kod dostępu z wiadomośći sms");
                         }
                         if (poprawnieZwalidowany) {
                             var obslugaApi = new ObslugaApi_1.ObslugaApi();
@@ -285,6 +279,7 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                             apiKey.setAttribute("value", kodSms.value);
                             form.append(apiKey);
                             document.body.appendChild(form);
+                            _this_3.loader.uruchom(true);
                             $(form).submit();
                             // }, function (response) {
                             //     poprawnieZwalidowany = false;
@@ -299,9 +294,11 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                     break;
                 }
                 case 4: {
+                    var _this_4 = this;
                     this.przyciskPrzejdzNaStroneGlowna = document.body.querySelector("#przejdzNaStroneGlowna");
                     this.przyciskPrzejdzNaStroneGlowna.addEventListener("click", function (e) {
                         window.location.href = "/krok-1";
+                        _this_4.loader.uruchom(true);
                     });
                     break;
                 }
@@ -341,10 +338,6 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                     event.odswiez();
                 }
             });
-            // $("select, input").on("change", function () {
-            //     console.log(this);
-            //     $(this).switchClass("d-inline", "d-none");
-            // });
             html.addEventListener("change", function () {
                 console.log("234", inputs); //srednio dziala
                 for (var i = 0; i <= inputs.length; i++) {

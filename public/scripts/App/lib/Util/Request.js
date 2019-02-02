@@ -4,16 +4,14 @@ define(["require", "exports"], function (require, exports) {
     var Request = /** @class */ (function () {
         function Request() {
         }
-        Request.pobierz = function (url, metoda, dane, success, error) {
+        Request.pobierz = function (url, metoda, dane, success, error, beforeSend) {
             $.ajax({
                 type: metoda,
                 url: url,
                 // The key needs to match your method's input parameter (case-sensitive).
                 data: dane,
                 contentType: "application/json; charset=utf-8",
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('X-API-KEY', "123");
-                },
+                beforeSend: beforeSend,
                 dataType: "json",
                 async: false,
                 success: success,

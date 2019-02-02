@@ -9,7 +9,7 @@ use App\Library\Generator;
 use App\Library\KrokiStale;
 use App\Library\Sesja;
 use App\Model\Wniosek;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * Class StronyController
  * @package App\Controller
  */
-class StronyController extends AbstractController
+class StronyController extends Controller
 {
     /**
      * @var Sesja

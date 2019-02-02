@@ -110,3 +110,7 @@ select.selectpicker {
         stroke-dashoffset: -22;
     }
 }
+
+#page-body{
+    display: none;
+}

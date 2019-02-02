@@ -7,6 +7,7 @@ parameters:
     locale: 'en'
     domena: 'http://parking.pl'
     domena_api: 'http://api.parking.pl/v1/'
+    czy_opozniac_ladowanie_adresow: true #bo adresy ładują się za szybko i nie widać loadera
 
 services:
     # default configuration for services in *this* file

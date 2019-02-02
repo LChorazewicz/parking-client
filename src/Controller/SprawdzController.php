@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Exceptions\WprowadzoneDaneSaNieprawidloweException;
 use App\Exceptions\WystapilBladWKomunikacjiZApiException;
 use App\Library\Api\Metody;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * @package App\Controller
  * @Route("/sprawdz", name="sprawdz")
  */
-class SprawdzController extends AbstractController
+class SprawdzController extends Controller
 {
     /**
      * @var Metody
@@ -23,6 +23,7 @@ class SprawdzController extends AbstractController
 
     /**
      * SprawdzController constructor.
+     * @param Metody $metody
      */
     public function __construct(Metody $metody)
     {
