@@ -18,7 +18,7 @@ define(["require", "exports", "../helper/Miesiac"], function (require, exports, 
                 'do_przodu': this.stworzDziecko("do_przodu"),
                 'legenda': this.stworzDziecko("legenda"),
                 'cialo': this.stworzDziecko("cialo"),
-                'input': input
+                'input': input,
             };
             var poprzedniMiesiac = new Miesiac_1.Miesiac(data, -1);
             var obecnyMiesiac = new Miesiac_1.Miesiac(data, 0);

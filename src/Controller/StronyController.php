@@ -212,8 +212,8 @@ class StronyController extends Controller
             if(!$this->wniosekModel->czyKlientZamierzaWejscNaWlasciwyKrok($this->sesja->pobierzWniosekApi(), $request->get("_route"))){
                 return $this->redirect($this->wniosekModel->ustalWlasciwyKrokDlaKlienta($this->sesja->pobierzWniosekApi()->getStatus()));
             }
-            $daty = $request->request->get("daty", null);
-            $suma = $request->request->get("sumaKontrolna", null);
+            $daty = $request->request->get("daty", null);//do usuniecia
+            $suma = $request->request->get("sumaKontrolna", "1-1-1");//do usuniecia
 
             if($suma !== "0-0-0" && $suma !== "" && $suma !== null){
                 $czyMoge = (bool)$this->metodyApi->sprawdzSumeKontrolna($suma);

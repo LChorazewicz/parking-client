@@ -18,53 +18,37 @@ define(["require", "exports", "../Util/Request"], function (require, exports, Re
         Pobierz.prototype.pobierzIdStrefy = function (wojewodztwo, miasto, ulica) {
             return 12448;
         };
-        Pobierz.prototype.sprawdzDostepnoscMiejscWStrefie = function (strefa, daty) {
-            return {
-                dostepnoscWybranychDat: true,
-                dostepnoscMiejsc: true,
-                alternatywa: true,
-                daty: {
-                    "18-11-2018": {
-                        wolnychMiejsc: 145,
-                        obserwujacych: 44,
-                        godziny: [
-                            [0, 1],
-                            [3, 8],
-                            [9, 11],
-                            [15, 16],
-                            [17, 19],
-                            [20, 21],
-                            [22, 23],
-                            [23, 0]
-                        ]
-                    },
-                    "19-11-2018": {
-                        wolnychMiejsc: 88,
-                        obserwujacych: 21,
-                        godziny: [
-                            [0, 3],
-                            [15, 16],
-                            [17, 19],
-                            [20, 21],
-                            [23, 0]
-                        ]
-                    },
-                    "20-11-2018": {
-                        wolnychMiejsc: 14,
-                        obserwujacych: 4,
-                        godziny: [
-                            [0, 11],
-                            [15, 16],
-                            [20, 21],
-                            [23, 0]
-                        ]
-                    },
-                    "21-11-2018": {
-                        wolnychMiejsc: 0,
-                        obserwujacych: 4,
-                        godziny: []
-                    }
+        Pobierz.prototype.sprawdzDostepnaOferte = function (strefa, daty) {
+            var oferty = [
+                {
+                    id: 123,
+                    odleglosc: " -- ",
+                    lokalizacja: 'Ostrołęka, Sikorskiego 5',
+                    iloscGodzin: 48,
+                    cena: 37
                 }
+            ];
+            var alternatywy = [
+                {
+                    id: 124,
+                    odleglosc: "1.32",
+                    lokalizacja: 'Ostrołęka, Sikorskiego 164',
+                    iloscGodzin: 48,
+                    cena: 38
+                },
+                {
+                    id: 125,
+                    odleglosc: "1.41",
+                    lokalizacja: 'Ostrołęka, Sikorskiego 9',
+                    iloscGodzin: 48,
+                    cena: 34
+                }
+            ];
+            return {
+                oferta: true,
+                alternatywa: true,
+                oferty: oferty,
+                alternatywy: alternatywy
             };
         };
         return Pobierz;

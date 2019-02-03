@@ -1,4 +1,4 @@
-define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", "./lib/Walidacja/Walidacja", "./lib/ObslugaApi/ObslugaApi", "./lib/Loader"], function (require, exports, kalendarz_1, OperacjeNaTablicach_1, Walidacja_1, ObslugaApi_1, Loader_1) {
+define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", "./lib/Walidacja/Walidacja", "./lib/ObslugaApi/ObslugaApi", "./lib/Loader", "./lib/Util/Modal"], function (require, exports, kalendarz_1, OperacjeNaTablicach_1, Walidacja_1, ObslugaApi_1, Loader_1, Modal_1) {
     "use strict";
     exports.__esModule = true;
     var EventDispatcher = /** @class */ (function () {
@@ -16,8 +16,11 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                     this.kalendarz.uruchom(data);
                     this.wstecz = document.body.querySelector(".wstecz");
                     this.doProdu = document.body.querySelector(".do_przodu");
-                    this.przyciskPrzejdzNa2Krok = document.body.querySelector("#przejdzNa2Krok");
+                    this.przyciskSprawdzDostepnoscOfert = document.body.querySelector("#przyciskSprawdzDostepnoscOfert");
+                    this.przyciskPrzejdzNa2Krok = document.body.querySelector("#przyciskPrzejdzNa2Krok");
                     this.dniZKalendarza = document.querySelector(".cialo");
+                    var wybranaOferta = document.querySelector(".clickable-row.bg-info");
+                    var idWybranejOferty_1 = 0;
                     var _this_1 = this;
                     var dni_1 = this.dniWybrane;
                     this.wstecz.addEventListener("click", function () {
@@ -35,17 +38,14 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                         kalendarz_2.zaznaczDni(dni_1);
                         _this_1.odswiez();
                     });
-                    this.przyciskPrzejdzNa2Krok.addEventListener("click", function () {
+                    this.przyciskSprawdzDostepnoscOfert.addEventListener("click", function () {
                         var walidacja = new Walidacja_1.Walidacja();
                         var poprawnieZwalidowany = true;
                         var dostepnosc = true;
-                        var alternatywa = false;
-                        var listaBledow = [];
                         var termin = document.body.querySelector("#termin");
                         if (!walidacja.walidujDaty(dni_1)) {
                             poprawnieZwalidowany = false;
-                            listaBledow.push("Wybrany zakres dat nie jest poprawny!");
-                            _this_1.pokazBladUzytkownikowi(termin, "Wybrany zakres dat nie jest poprawny!");
+                            _this_1.pokazBladUzytkownikowi("Wybrany zakres dat nie jest poprawny!");
                         }
                         var wojewodztwoSelect = document.body.querySelector("select#wojewodztwo");
                         var wojewodztwo = (wojewodztwoSelect.options[wojewodztwoSelect.selectedIndex].value != 'undefined') ? parseInt(wojewodztwoSelect.options[wojewodztwoSelect.selectedIndex].value) : 0;
@@ -55,87 +55,60 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                         var ulica = (ulicaSelect.options[ulicaSelect.selectedIndex].value != 'undefined') ? parseInt(ulicaSelect.options[ulicaSelect.selectedIndex].value) : 0;
                         if (poprawnieZwalidowany && !walidacja.naturalNumber(wojewodztwo)) {
                             poprawnieZwalidowany = false;
-                            listaBledow.push("Wybrane województwo nie jest obsługiwane przez Nasz system!");
-                            _this_1.pokazBladUzytkownikowi(wojewodztwoSelect, "Wybrane województwo nie jest obsługiwane przez Nasz system!");
+                            _this_1.pokazBladUzytkownikowi("Wybrane województwo nie jest obsługiwane przez Nasz system!");
                         }
                         if (poprawnieZwalidowany && !walidacja.naturalNumber(miasto)) {
                             poprawnieZwalidowany = false;
-                            listaBledow.push("Wybrane miasto nie jest obsługiwane przez Nasz system!");
-                            _this_1.pokazBladUzytkownikowi(miastoSelect, "Wybrane miasto nie jest obsługiwane przez Nasz system!");
+                            _this_1.pokazBladUzytkownikowi("Wybrane miasto nie jest obsługiwane przez Nasz system!");
                         }
                         if (poprawnieZwalidowany && !walidacja.naturalNumber(ulica)) {
                             poprawnieZwalidowany = false;
-                            listaBledow.push("Wybrane ulica nie jest obsługiwana przez Nasz system!");
-                            _this_1.pokazBladUzytkownikowi(ulicaSelect, "Wybrane ulica nie jest obsługiwana przez Nasz system!");
+                            _this_1.pokazBladUzytkownikowi("Wybrane ulica nie jest obsługiwana przez Nasz system!");
                         }
                         if (poprawnieZwalidowany) {
                             var obslugaApi = new ObslugaApi_1.ObslugaApi();
                             var strefa = obslugaApi.pobierzObiektPobierz(domena).pobierzIdStrefy(wojewodztwo, miasto, ulica);
                             if (strefa <= 0) {
                                 dostepnosc = false;
-                                listaBledow.push("Wybrana strefa nie istnieje w Naszym systemie, spróbuj innej lokalizacji!");
                                 _this_1.pokazBladSystemowy("Wybrana strefa nie istnieje w Naszym systemie, spróbuj innej lokalizacji!");
                             }
                             if (dostepnosc) {
-                                var miejsca = obslugaApi.pobierzObiektPobierz(domena).sprawdzDostepnoscMiejscWStrefie(strefa, dni_1);
-                                if (miejsca.dostepnoscMiejsc && !miejsca.dostepnoscWybranychDat) {
+                                var miejsca = obslugaApi.pobierzObiektPobierz(domena).sprawdzDostepnaOferte(strefa, dni_1);
+                                var oferta = void 0;
+                                if (!miejsca.oferta && !miejsca.alternatywa) {
                                     dostepnosc = false;
-                                    if (miejsca.alternatywa) {
-                                        alternatywa = true;
-                                        listaBledow.push("W wybranej lokalizacji nie ma wolnych miejsc w wybranym zakresie dat, ale nic straconego! " +
-                                            "Zaznaczyliści w kalendarzu najbardziej zbliżoną ofertę, sprawdź czy oferta Ci odpowiada!");
-                                        _this_1.pokazBladSystemowy("W wybranej lokalizacji nie ma wolnych miejsc w wybranym zakresie dat, ale nic straconego! " +
-                                            "Zaznaczyliści w kalendarzu najbardziej zbliżoną ofertę, sprawdź czy oferta Ci odpowiada!");
-                                    }
-                                    else {
-                                        listaBledow.push("W wybranym przedziale dat nie ma wolnych miejsc!");
-                                        _this_1.pokazBladSystemowy("W wybranym przedziale dat nie ma wolnych miejsc!");
-                                    }
                                 }
-                                else if (dostepnosc && !miejsca.dostepnoscMiejsc && miejsca.dostepnoscWybranychDat) {
-                                    dostepnosc = false;
-                                    if (miejsca.alternatywa) {
-                                        alternatywa = true;
-                                        listaBledow.push("W wybranej lokalizacji nie ma wolnych miejsc w wybranym zakresie dat, ale nic straconego! " +
-                                            "Zaznaczyliści w kalendarzu najbardziej zbliżoną ofertę, sprawdź czy oferta Ci odpowiada!");
-                                        _this_1.pokazBladSystemowy("W wybranej lokalizacji nie ma wolnych miejsc w wybranym zakresie dat, ale nic straconego! " +
-                                            "Zaznaczyliści w kalendarzu najbardziej zbliżoną ofertę, sprawdź czy oferta Ci odpowiada!");
-                                    }
-                                    else {
-                                        listaBledow.push("W wybranym przedziale dat nie ma wolnych miejsc!");
-                                        _this_1.pokazBladSystemowy("W wybranym przedziale dat nie ma wolnych miejsc!");
-                                    }
+                                if (dostepnosc && miejsca.oferta) {
+                                    oferta = miejsca;
                                 }
-                                else {
-                                    if (dostepnosc && alternatywa || dostepnosc && !alternatywa) {
-                                        alternatywa = false;
-                                    }
-                                    console.log("[info] znaleźliśmy dla Ciebie miejsce!");
+                                if (dostepnosc && !miejsca.oferta && miejsca.alternatywa) {
+                                    oferta = miejsca;
+                                }
+                                if (oferta != null) {
+                                    idWybranejOferty_1 = 0;
+                                    var modal = new Modal_1.Modal();
+                                    modal.pokazOknoZOfertami(oferta);
                                 }
                             }
                         }
-                        if (dostepnosc && poprawnieZwalidowany) {
+                    });
+                    $(document).on('click', '.clickable-row', function () {
+                        idWybranejOferty_1 = parseInt($(this).attr("data-id"));
+                        console.log("Wybrana oferta to: " + idWybranejOferty_1);
+                    });
+                    this.przyciskPrzejdzNa2Krok.addEventListener("click", function (e) {
+                        if (idWybranejOferty_1 != 0) {
                             _this_1.loader.uruchom(true);
                             var form = document.createElement('form');
                             form.action = "/czy-moge-przejsc-na-krok-2";
                             form.method = "POST";
                             // form.style("display", "none");
-                            var sumaKontrolna = document.createElement('input');
-                            sumaKontrolna.setAttribute("type", "hidden");
-                            sumaKontrolna.setAttribute("name", "sumaKontrolna");
-                            sumaKontrolna.setAttribute("value", wojewodztwo + "-" + miasto + "-" + ulica);
-                            form.append(sumaKontrolna);
-                            var daty = document.createElement('input');
-                            daty.setAttribute("type", "hidden");
-                            daty.setAttribute("name", "daty");
-                            daty.setAttribute("value", dni_1.join(","));
-                            form.append(daty);
                             document.body.appendChild(form);
                             $(form).submit();
                         }
-                        console.debug(listaBledow);
-                        console.debug("Dostępność " + dostepnosc);
-                        console.debug("Alternatywa " + alternatywa);
+                        else {
+                            _this_1.pokazBladUzytkownikowi("Nie wybrałeś oferty");
+                        }
                     });
                     this.dniZKalendarza.addEventListener("click", function (e) {
                         // @ts-ignore
@@ -157,46 +130,37 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                     this.przyciskPrzejdzNa3Krok.addEventListener("click", function (e) {
                         var walidacja = new Walidacja_1.Walidacja();
                         var poprawnieZwalidowany = true;
-                        var listaBledow = [];
                         if (walidacja.isEmpty(rejestracja_1.value)) {
                             poprawnieZwalidowany = false;
-                            listaBledow.push("Niepoprawna wartość w polu numer rejestracyjny");
-                            _this_2.pokazBladUzytkownikowi(rejestracja_1, "Niepoprawna wartość w polu numer rejestracyjny");
+                            _this_2.pokazBladUzytkownikowi("Niepoprawna wartość w polu numer rejestracyjny");
                         }
                         if (poprawnieZwalidowany && walidacja.isEmpty(imie_1.value)) {
                             poprawnieZwalidowany = false;
-                            listaBledow.push("Niepoprawna wartość w polu imie");
-                            _this_2.pokazBladUzytkownikowi(imie_1, "Niepoprawna wartość w polu imie");
+                            _this_2.pokazBladUzytkownikowi("Niepoprawna wartość w polu imie");
                         }
                         if (poprawnieZwalidowany && walidacja.isEmpty(nazwisko_1.value)) {
                             poprawnieZwalidowany = false;
-                            listaBledow.push("Niepoprawna wartość w polu nazwisko");
-                            _this_2.pokazBladUzytkownikowi(nazwisko_1, "Niepoprawna wartość w polu nazwisko");
+                            _this_2.pokazBladUzytkownikowi("Niepoprawna wartość w polu nazwisko");
                         }
                         if (poprawnieZwalidowany && walidacja.isEmpty(telefon_1.value)) {
                             poprawnieZwalidowany = false;
-                            listaBledow.push("Niepoprawna wartość w polu numer telefon");
-                            _this_2.pokazBladUzytkownikowi(telefon_1, "Niepoprawna wartość w polu telefon");
+                            _this_2.pokazBladUzytkownikowi("Niepoprawna wartość w polu telefon");
                         }
                         if (poprawnieZwalidowany && !walidacja.isChecked(zgoda1_1)) {
                             poprawnieZwalidowany = false;
-                            listaBledow.push("Nie zaznaczono wszystkich wymaganych zgód");
-                            _this_2.pokazBladUzytkownikowi(zgoda1_1, "Niepoprawna wartość w polu telefon");
+                            _this_2.pokazBladUzytkownikowi("Niepoprawna wartość w polu telefon");
                         }
                         if (poprawnieZwalidowany && !walidacja.isChecked(zgoda2_1)) {
                             poprawnieZwalidowany = false;
-                            listaBledow.push("Nie zaznaczono wszystkich wymaganych zgód");
-                            _this_2.pokazBladUzytkownikowi(zgoda2_1, "Nie zaznaczono wszystkich wymaganych zgód");
+                            _this_2.pokazBladUzytkownikowi("Nie zaznaczono wszystkich wymaganych zgód");
                         }
                         if (poprawnieZwalidowany && !walidacja.isChecked(zgoda3_1)) {
                             poprawnieZwalidowany = false;
-                            listaBledow.push("Nie zaznaczono wszystkich wymaganych zgód");
-                            _this_2.pokazBladUzytkownikowi(zgoda3_1, "Nie zaznaczono wszystkich wymaganych zgód");
+                            _this_2.pokazBladUzytkownikowi("Nie zaznaczono wszystkich wymaganych zgód");
                         }
                         if (poprawnieZwalidowany && !walidacja.isChecked(zgoda4_1)) {
                             poprawnieZwalidowany = false;
-                            listaBledow.push("Nie zaznaczono wszystkich wymaganych zgód");
-                            _this_2.pokazBladUzytkownikowi(zgoda4_1, "Nie zaznaczono wszystkich wymaganych zgód");
+                            _this_2.pokazBladUzytkownikowi("Nie zaznaczono wszystkich wymaganych zgód");
                         }
                         if (poprawnieZwalidowany) {
                             var form = document.createElement('form');
@@ -247,9 +211,6 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                             _this_2.loader.uruchom(true);
                             $(form).submit();
                         }
-                        else {
-                            console.log(listaBledow);
-                        }
                     });
                     break;
                 }
@@ -259,12 +220,10 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                     this.przyciskPrzejdzNaPodsumowanie.addEventListener("click", function (e) {
                         var walidacja = new Walidacja_1.Walidacja();
                         var poprawnieZwalidowany = true;
-                        var listaBledow = [];
                         var kodSms = document.body.querySelector("#kod_dostepu");
                         if (walidacja.isEmpty(kodSms.value) && kodSms.value.length !== 6) {
                             poprawnieZwalidowany = false;
-                            listaBledow.push("Wpisz kod dostępu z wiadomośći sms");
-                            _this_3.pokazBladUzytkownikowi(kodSms, "Wpisz kod dostępu z wiadomośći sms");
+                            _this_3.pokazBladUzytkownikowi("Wpisz kod dostępu z wiadomośći sms");
                         }
                         if (poprawnieZwalidowany) {
                             var obslugaApi = new ObslugaApi_1.ObslugaApi();
@@ -285,10 +244,6 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                             //     poprawnieZwalidowany = false;
                             //     listaBledow.push("Podany kod dostępu jest niepoprawny.")
                             // });
-                            console.log(listaBledow);
-                        }
-                        else {
-                            console.log(listaBledow);
                         }
                     });
                     break;
@@ -353,12 +308,10 @@ define(["require", "exports", "./lib/kalendarz", "./lib/OperacjeNaTablicach", ".
                 this.dniWybrane.push(data);
             }
         };
-        EventDispatcher.prototype.pokazBladUzytkownikowi = function (element, tresc) {
-            element.classList.add('is-invalid');
-            element.focus();
-            var elementDoTresciBledu = element.parentElement.getElementsByTagName('small').item(0);
-            elementDoTresciBledu.classList.replace('d-none', 'd-inline');
-            elementDoTresciBledu.innerText = tresc;
+        EventDispatcher.prototype.pokazBladUzytkownikowi = function (tresc) {
+            var modal = new Modal_1.Modal();
+            modal.pokazBladUzytkownikowi(tresc);
+            return;
         };
         EventDispatcher.prototype.usunBladUzytkownika = function (element) {
             console.log(element);

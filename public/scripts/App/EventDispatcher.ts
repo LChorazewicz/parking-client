@@ -3,6 +3,8 @@ import {OperacjeNaTablicach} from "./lib/OperacjeNaTablicach";
 import {Walidacja} from "./lib/Walidacja/Walidacja";
 import {ObslugaApi} from "./lib/ObslugaApi/ObslugaApi";
 import {Loader} from "./lib/Loader";
+import {Modal} from "./lib/Util/Modal";
+import {OdpowiedzOferty, oferta} from "./lib/ObslugaApi/Pobierz";
 
 export class EventDispatcher {
     public wstecz: HTMLElement;
@@ -11,11 +13,12 @@ export class EventDispatcher {
     public dniWybrane: Array<Date> = [];
     public kalendarz;
     private operacjeNaTablicach: OperacjeNaTablicach;
-    private przyciskPrzejdzNa2Krok: Element;
+    private przyciskSprawdzDostepnoscOfert: Element;
     private przyciskPrzejdzNa3Krok: Element;
     private przyciskPrzejdzNaPodsumowanie: Element;
     private przyciskPrzejdzNaStroneGlowna: Element;
     private loader: Loader;
+    private przyciskPrzejdzNa2Krok: Element;
 
     public constructor() {
         this.operacjeNaTablicach = new OperacjeNaTablicach();
@@ -32,8 +35,11 @@ export class EventDispatcher {
 
                 this.wstecz = document.body.querySelector(".wstecz");
                 this.doProdu = document.body.querySelector(".do_przodu");
-                this.przyciskPrzejdzNa2Krok = document.body.querySelector("#przejdzNa2Krok");
+                this.przyciskSprawdzDostepnoscOfert = document.body.querySelector("#przyciskSprawdzDostepnoscOfert");
+                this.przyciskPrzejdzNa2Krok = document.body.querySelector("#przyciskPrzejdzNa2Krok");
                 this.dniZKalendarza = document.querySelector(".cialo");
+                let wybranaOferta: HTMLElement | null = document.querySelector(".clickable-row.bg-info");
+                let idWybranejOferty = 0;
                 let _this = this;
                 let dni = this.dniWybrane;
 
@@ -55,18 +61,15 @@ export class EventDispatcher {
                     _this.odswiez();
                 });
 
-                this.przyciskPrzejdzNa2Krok.addEventListener("click", function () {
+                this.przyciskSprawdzDostepnoscOfert.addEventListener("click", function () {
                     let walidacja = new Walidacja();
                     let poprawnieZwalidowany = true;
                     let dostepnosc = true;
-                    let alternatywa = false;
-                    let listaBledow: Array<string> = [];
                     let termin: HTMLInputElement = document.body.querySelector("#termin");
 
                     if (!walidacja.walidujDaty(dni)) {
                         poprawnieZwalidowany = false;
-                        listaBledow.push("Wybrany zakres dat nie jest poprawny!");
-                        _this.pokazBladUzytkownikowi(termin, "Wybrany zakres dat nie jest poprawny!")
+                        _this.pokazBladUzytkownikowi("Wybrany zakres dat nie jest poprawny!")
                     }
 
                     let wojewodztwoSelect: HTMLSelectElement = document.body.querySelector("select#wojewodztwo");
@@ -78,20 +81,17 @@ export class EventDispatcher {
 
                     if (poprawnieZwalidowany && !walidacja.naturalNumber(wojewodztwo)) {
                         poprawnieZwalidowany = false;
-                        listaBledow.push("Wybrane województwo nie jest obsługiwane przez Nasz system!");
-                        _this.pokazBladUzytkownikowi(wojewodztwoSelect,"Wybrane województwo nie jest obsługiwane przez Nasz system!");
+                        _this.pokazBladUzytkownikowi("Wybrane województwo nie jest obsługiwane przez Nasz system!");
                     }
 
                     if (poprawnieZwalidowany && !walidacja.naturalNumber(miasto)) {
                         poprawnieZwalidowany = false;
-                        listaBledow.push("Wybrane miasto nie jest obsługiwane przez Nasz system!");
-                        _this.pokazBladUzytkownikowi(miastoSelect,"Wybrane miasto nie jest obsługiwane przez Nasz system!");
+                        _this.pokazBladUzytkownikowi("Wybrane miasto nie jest obsługiwane przez Nasz system!");
                     }
 
                     if (poprawnieZwalidowany && !walidacja.naturalNumber(ulica)) {
                         poprawnieZwalidowany = false;
-                        listaBledow.push("Wybrane ulica nie jest obsługiwana przez Nasz system!");
-                        _this.pokazBladUzytkownikowi(ulicaSelect,"Wybrane ulica nie jest obsługiwana przez Nasz system!");
+                        _this.pokazBladUzytkownikowi("Wybrane ulica nie jest obsługiwana przez Nasz system!");
                     }
 
                     if (poprawnieZwalidowany) {
@@ -100,75 +100,50 @@ export class EventDispatcher {
 
                         if (strefa <= 0) {
                             dostepnosc = false;
-                            listaBledow.push("Wybrana strefa nie istnieje w Naszym systemie, spróbuj innej lokalizacji!");
                             _this.pokazBladSystemowy("Wybrana strefa nie istnieje w Naszym systemie, spróbuj innej lokalizacji!");
                         }
 
                         if (dostepnosc) {
-                            let miejsca = obslugaApi.pobierzObiektPobierz(domena).sprawdzDostepnoscMiejscWStrefie(strefa, dni);
-
-                            if (miejsca.dostepnoscMiejsc && !miejsca.dostepnoscWybranychDat) {
+                            let miejsca = obslugaApi.pobierzObiektPobierz(domena).sprawdzDostepnaOferte(strefa, dni);
+                            let oferta: OdpowiedzOferty;
+                            if (!miejsca.oferta && !miejsca.alternatywa) {
                                 dostepnosc = false;
-                                if (miejsca.alternatywa) {
-                                    alternatywa = true;
-                                    listaBledow.push("W wybranej lokalizacji nie ma wolnych miejsc w wybranym zakresie dat, ale nic straconego! " +
-                                        "Zaznaczyliści w kalendarzu najbardziej zbliżoną ofertę, sprawdź czy oferta Ci odpowiada!");
-                                    _this.pokazBladSystemowy("W wybranej lokalizacji nie ma wolnych miejsc w wybranym zakresie dat, ale nic straconego! " +
-                                        "Zaznaczyliści w kalendarzu najbardziej zbliżoną ofertę, sprawdź czy oferta Ci odpowiada!");
+                            }
 
-                                } else {
-                                    listaBledow.push("W wybranym przedziale dat nie ma wolnych miejsc!");
-                                    _this.pokazBladSystemowy("W wybranym przedziale dat nie ma wolnych miejsc!");
-                                }
+                            if(dostepnosc && miejsca.oferta){
+                                oferta = miejsca;
+                            }
 
-                            } else if (dostepnosc && !miejsca.dostepnoscMiejsc && miejsca.dostepnoscWybranychDat) {
-                                dostepnosc = false;
-                                if (miejsca.alternatywa) {
-                                    alternatywa = true;
-                                    listaBledow.push("W wybranej lokalizacji nie ma wolnych miejsc w wybranym zakresie dat, ale nic straconego! " +
-                                        "Zaznaczyliści w kalendarzu najbardziej zbliżoną ofertę, sprawdź czy oferta Ci odpowiada!");
-                                    _this.pokazBladSystemowy("W wybranej lokalizacji nie ma wolnych miejsc w wybranym zakresie dat, ale nic straconego! " +
-                                        "Zaznaczyliści w kalendarzu najbardziej zbliżoną ofertę, sprawdź czy oferta Ci odpowiada!");
+                            if(dostepnosc && !miejsca.oferta && miejsca.alternatywa){
+                                oferta = miejsca;
+                            }
 
-                                } else {
-                                    listaBledow.push("W wybranym przedziale dat nie ma wolnych miejsc!");
-                                    _this.pokazBladSystemowy("W wybranym przedziale dat nie ma wolnych miejsc!");
-                                }
-                            } else {
-                                if (dostepnosc && alternatywa || dostepnosc && !alternatywa) {
-                                    alternatywa = false;
-                                }
-
-                                console.log("[info] znaleźliśmy dla Ciebie miejsce!");
+                            if(oferta != null){
+                                idWybranejOferty = 0;
+                                let modal = new Modal();
+                                modal.pokazOknoZOfertami(oferta);
                             }
                         }
                     }
+                });
 
-                    if (dostepnosc && poprawnieZwalidowany) {
+                $(document).on('click', '.clickable-row', function() {
+                    idWybranejOferty = parseInt($(this).attr("data-id"));
+                    console.log("Wybrana oferta to: " + idWybranejOferty);
+                });
+
+                this.przyciskPrzejdzNa2Krok.addEventListener("click", function (e) {
+                    if (idWybranejOferty != 0) {
                         _this.loader.uruchom(true);
                         let form: HTMLFormElement = document.createElement('form');
                         form.action = "/czy-moge-przejsc-na-krok-2";
                         form.method = "POST";
                         // form.style("display", "none");
-
-                        let sumaKontrolna: HTMLInputElement = document.createElement('input');
-                        sumaKontrolna.setAttribute("type", "hidden");
-                        sumaKontrolna.setAttribute("name", "sumaKontrolna");
-                        sumaKontrolna.setAttribute("value", wojewodztwo + "-" + miasto + "-" + ulica);
-                        form.append(sumaKontrolna);
-
-                        let daty: HTMLInputElement = document.createElement('input');
-                        daty.setAttribute("type", "hidden");
-                        daty.setAttribute("name", "daty");
-                        daty.setAttribute("value", dni.join(","));
-                        form.append(daty);
-
                         document.body.appendChild(form);
                         $(form).submit();
+                    }else{
+                        _this.pokazBladUzytkownikowi("Nie wybrałeś oferty")
                     }
-                    console.debug(listaBledow);
-                    console.debug("Dostępność " + dostepnosc);
-                    console.debug("Alternatywa " + alternatywa);
                 });
 
 
@@ -202,54 +177,45 @@ export class EventDispatcher {
                 this.przyciskPrzejdzNa3Krok.addEventListener("click", function (e) {
                     let walidacja = new Walidacja();
                     let poprawnieZwalidowany = true;
-                    let listaBledow: Array<string> = [];
 
                     if (walidacja.isEmpty(rejestracja.value)) {
                         poprawnieZwalidowany = false;
-                        listaBledow.push("Niepoprawna wartość w polu numer rejestracyjny");
-                        _this.pokazBladUzytkownikowi(rejestracja, "Niepoprawna wartość w polu numer rejestracyjny")
+                        _this.pokazBladUzytkownikowi("Niepoprawna wartość w polu numer rejestracyjny")
                     }
 
                     if (poprawnieZwalidowany && walidacja.isEmpty(imie.value)) {
                         poprawnieZwalidowany = false;
-                        listaBledow.push("Niepoprawna wartość w polu imie");
-                        _this.pokazBladUzytkownikowi(imie, "Niepoprawna wartość w polu imie")
+                        _this.pokazBladUzytkownikowi("Niepoprawna wartość w polu imie")
                     }
 
                     if (poprawnieZwalidowany && walidacja.isEmpty(nazwisko.value)) {
                         poprawnieZwalidowany = false;
-                        listaBledow.push("Niepoprawna wartość w polu nazwisko");
-                        _this.pokazBladUzytkownikowi(nazwisko, "Niepoprawna wartość w polu nazwisko")
+                        _this.pokazBladUzytkownikowi("Niepoprawna wartość w polu nazwisko")
                     }
 
                     if (poprawnieZwalidowany && walidacja.isEmpty(telefon.value)) {
                         poprawnieZwalidowany = false;
-                        listaBledow.push("Niepoprawna wartość w polu numer telefon");
-                        _this.pokazBladUzytkownikowi(telefon, "Niepoprawna wartość w polu telefon")
+                        _this.pokazBladUzytkownikowi("Niepoprawna wartość w polu telefon")
                     }
 
                     if (poprawnieZwalidowany && !walidacja.isChecked(zgoda1)) {
                         poprawnieZwalidowany = false;
-                        listaBledow.push("Nie zaznaczono wszystkich wymaganych zgód");
-                        _this.pokazBladUzytkownikowi(zgoda1, "Niepoprawna wartość w polu telefon")
+                        _this.pokazBladUzytkownikowi("Niepoprawna wartość w polu telefon")
                     }
 
                     if (poprawnieZwalidowany && !walidacja.isChecked(zgoda2)) {
                         poprawnieZwalidowany = false;
-                        listaBledow.push("Nie zaznaczono wszystkich wymaganych zgód");
-                        _this.pokazBladUzytkownikowi(zgoda2, "Nie zaznaczono wszystkich wymaganych zgód")
+                        _this.pokazBladUzytkownikowi("Nie zaznaczono wszystkich wymaganych zgód")
                     }
 
                     if (poprawnieZwalidowany && !walidacja.isChecked(zgoda3)) {
                         poprawnieZwalidowany = false;
-                        listaBledow.push("Nie zaznaczono wszystkich wymaganych zgód");
-                        _this.pokazBladUzytkownikowi(zgoda3, "Nie zaznaczono wszystkich wymaganych zgód")
+                        _this.pokazBladUzytkownikowi("Nie zaznaczono wszystkich wymaganych zgód")
                     }
 
                     if (poprawnieZwalidowany && !walidacja.isChecked(zgoda4)) {
                         poprawnieZwalidowany = false;
-                        listaBledow.push("Nie zaznaczono wszystkich wymaganych zgód");
-                        _this.pokazBladUzytkownikowi(zgoda4, "Nie zaznaczono wszystkich wymaganych zgód")
+                        _this.pokazBladUzytkownikowi("Nie zaznaczono wszystkich wymaganych zgód")
                     }
 
                     if (poprawnieZwalidowany) {
@@ -309,8 +275,6 @@ export class EventDispatcher {
                         document.body.appendChild(form);
                         _this.loader.uruchom(true);
                         $(form).submit();
-                    } else {
-                        console.log(listaBledow);
                     }
                 });
 
@@ -324,12 +288,10 @@ export class EventDispatcher {
                 this.przyciskPrzejdzNaPodsumowanie.addEventListener("click", function (e) {
                     let walidacja = new Walidacja();
                     let poprawnieZwalidowany = true;
-                    let listaBledow: Array<string> = [];
                     let kodSms: HTMLInputElement = document.body.querySelector("#kod_dostepu");
                     if (walidacja.isEmpty(kodSms.value) && kodSms.value.length !== 6) {
                         poprawnieZwalidowany = false;
-                        listaBledow.push("Wpisz kod dostępu z wiadomośći sms");
-                        _this.pokazBladUzytkownikowi(kodSms, "Wpisz kod dostępu z wiadomośći sms");
+                        _this.pokazBladUzytkownikowi("Wpisz kod dostępu z wiadomośći sms");
                     }
 
                     if (poprawnieZwalidowany) {
@@ -354,9 +316,6 @@ export class EventDispatcher {
                         //     poprawnieZwalidowany = false;
                         //     listaBledow.push("Podany kod dostępu jest niepoprawny.")
                         // });
-                        console.log(listaBledow);
-                    } else {
-                        console.log(listaBledow);
                     }
                 });
                 break;
@@ -432,12 +391,10 @@ export class EventDispatcher {
         }
     }
 
-    public pokazBladUzytkownikowi(element: HTMLSelectElement | HTMLInputElement, tresc: string){
-        element.classList.add('is-invalid');
-        element.focus();
-        let elementDoTresciBledu: HTMLElement = element.parentElement.getElementsByTagName('small').item(0);
-        elementDoTresciBledu.classList.replace('d-none', 'd-inline');
-        elementDoTresciBledu.innerText = tresc;
+    public pokazBladUzytkownikowi(tresc: string){
+        let modal = new Modal();
+        modal.pokazBladUzytkownikowi(tresc);
+        return;
     }
 
     public usunBladUzytkownika(element: HTMLSelectElement | HTMLInputElement){

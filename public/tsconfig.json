@@ -66,6 +66,7 @@
     "scripts/App/lib/ObslugaApi/Pobierz.ts",
     "scripts/App/lib/Util/Jquery.ts",
     "scripts/App/lib/Util/Request.ts",
+    "scripts/App/lib/Util/Modal.ts",
     "scripts/App/helper/Miesiac.ts",
     "scripts/App/EventDispatcher.ts",
     "scripts/App/lib/OperacjeNaTablicach.ts",
